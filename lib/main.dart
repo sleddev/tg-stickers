@@ -1,7 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
+import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:tgstickers/config_manager.dart';
+import 'package:tgstickers/hoosk/hoosk.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'widgets/panels.dart';
@@ -14,6 +19,7 @@ void main() {
   Window.initialize();
   Window.setEffect(effect: WindowEffect.transparent);
 
+
   windowManager.waitUntilReadyToShow().then((_) async {
     // await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     await windowManager.setAsFrameless();
@@ -23,7 +29,42 @@ void main() {
     windowManager.show();
   });
 
+  GetIt.I.registerSingleton<Controller>(Controller());
+
   runApp(const MyApp());
+}
+
+class Controller {
+  var stickerPacks = Writable<List<StickerPackConfig>>([]);
+  var currentPack = Writable<List<Sticker>>([]);
+  var currentPackName = Writable<String>('');
+
+  Controller() {
+    init();
+  }
+
+  void init() async {
+    String path = await getPath();
+    JSON configJson = jsonDecode(await File('$path/config.json').readAsString());
+    ConfigData config = ConfigData.fromJson(configJson, Directory(path));
+
+    stickerPacks.value = config.stickerPacks;
+    changePack(stickerPacks.value.first.name);
+  }
+
+  Future<String> getPath() async {
+    return '${(await getApplicationDocumentsDirectory()).path}\\TGStickers\\';
+  }
+
+  void changePack(String name) async {
+    var res = await getPath();
+    var packToLoad = stickerPacks.value.firstWhere((element) => element.name == name);
+    var imgPath = Directory('$res${packToLoad.basePath}');
+    var imgList = <Sticker>[];
+    imgPath.listSync().forEach((element) => imgList.add(Sticker(File(element.path))));
+    currentPackName.value = packToLoad.name;
+    currentPack.value = imgList;
+  }
 }
 
 class MyApp extends StatelessWidget {

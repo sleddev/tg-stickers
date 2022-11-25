@@ -1,10 +1,12 @@
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:super_clipboard/super_clipboard.dart';
+import 'package:tgstickers/hoosk/hoosk.dart';
+import 'package:tgstickers/main.dart';
+import 'package:tgstickers/utils.dart';
 import 'package:tgstickers/widgets/titlebar.dart';
 
 class LeftPanel extends StatelessWidget {
@@ -12,6 +14,30 @@ class LeftPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = getIt<Controller>();
+
+    Widget packsWidget() {
+      return Column(children:
+        [...hEach(c.stickerPacks.value, 
+          (item, i) => Container(
+            padding: const EdgeInsets.all(4),
+            child: 
+              GestureDetector(
+                onTap: () => c.changePack(item.name),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: hHover(const Color(0x33ffffff), Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Image.file(item.coverFile, filterQuality: FilterQuality.medium, isAntiAlias: true),
+                  )),
+                ),
+              )
+          )
+        ),
+        ]
+      );
+    }
+
     return Container(color: const Color(0xff3a3a3a),
       child: Column(children: [
         SizedBox(
@@ -31,6 +57,7 @@ class LeftPanel extends StatelessWidget {
             ),
           ),
         ),
+        hListen(c.stickerPacks, (value) => packsWidget())
       ]),  
     );
   }
@@ -59,34 +86,66 @@ class TestArea extends StatefulWidget {
 }
 
 class _TestAreaState extends State<TestArea> {
+  final c = getIt<Controller>();
   final image = const NetworkImage('https://unsplash.com/photos/Zey2zWuxSwI/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjY4NjE3MDI0&force=true');
   Directory? path;
   List<Sticker>? stickers;
 
   @override
   void initState() {
-    getStickers();
     
     super.initState();
   }
-  void getStickers() async {
-    var res = await getApplicationDocumentsDirectory();
-    var imgPath = Directory('${res.path}/TGStickers/stickerpacks/hiostickerpack');
-    var imgList = <Sticker>[];
-    imgPath.listSync().forEach((element) => imgList.add(Sticker(File(element.path))));
 
+  Widget packHeader() {
+    return hListen(c.currentPackName ,
+    (name) => SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        height: 28,
+        child: FittedBox(
+          alignment: Alignment.topLeft,
+          fit: BoxFit.fitHeight,
+          child: Text(
+            name.toUpperCase(),
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              color: Color(0xffbbbbbb),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
 
-
-    setState(() {
-      stickers = imgList;
-    });
+  Widget packContent() {
+    return hListen(c.currentPack,
+      (value) => SliverPadding(
+        padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+        sliver: SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5),
+          delegate: SliverChildBuilderDelegate(
+            (context, index) => Container(padding: const EdgeInsets.all(2), child: value[index]),
+            childCount: value.length
+          ),
+        ),
+      ),
+    );
   }
 
   Widget gridView() {
-    if (stickers == null) return const Text('...');
-    return GridView.builder(itemBuilder: (context, index) => Container(padding: const EdgeInsets.all(2), child: stickers![index]),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5),
-      itemCount: stickers!.length,
+    var scrollController = AdjustableScrollController(20);
+
+    return RawScrollbar(
+      controller: scrollController,
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          packHeader(),
+          packContent(),
+        ],
+      ),
     );
   }
 
@@ -104,6 +163,8 @@ class Sticker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = getIt<Controller>();
+
     return GestureDetector(
       child: Image.file(File(imageFile.path), isAntiAlias: true, filterQuality: FilterQuality.medium),
       onTap: () async {
