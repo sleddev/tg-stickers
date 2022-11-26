@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tgstickers/config_manager.dart';
@@ -15,14 +14,13 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // window manager
   windowManager.ensureInitialized();
-  // acrylic
-  Window.initialize();
-  Window.setEffect(effect: WindowEffect.transparent);
 
 
   windowManager.waitUntilReadyToShow().then((_) async {
     // await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     await windowManager.setAsFrameless();
+    await windowManager.setAlwaysOnTop(true);
+    await windowManager.setTitle('TG Stickers');
     await windowManager.setSize(const Size(440, 380));
     await windowManager.setResizable(false);
     if (Platform.isWindows) await windowManager.setHasShadow(true);
@@ -36,7 +34,7 @@ void main() {
 
 class Controller {
   var stickerPacks = Writable<List<StickerPackConfig>>([]);
-  var currentPack = Writable<List<Sticker>>([]);
+  var currentPack = Writable<List<Widget>>([]);
   var currentPackName = Writable<String>('');
 
   Controller() {
@@ -60,8 +58,8 @@ class Controller {
     var res = await getPath();
     var packToLoad = stickerPacks.value.firstWhere((element) => element.name == name);
     var imgPath = Directory('$res${packToLoad.basePath}');
-    var imgList = <Sticker>[];
-    imgPath.listSync().forEach((element) => imgList.add(Sticker(File(element.path))));
+    var imgList = <Widget>[];
+    imgPath.listSync().forEach((element) => imgList.add(sticker(File(element.path))));
     currentPackName.value = packToLoad.name;
     currentPack.value = imgList;
   }
@@ -90,10 +88,7 @@ class MyApp extends StatelessWidget {
             ),
             color: Color(0xff333333),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(0),
-            child: child!
-          ),
+          child: child!,
         );
       },
     );
@@ -107,13 +102,14 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xff333333),
-        body: SizedBox(
-          height: double.infinity,
-          width: double.infinity,
-          child: Flex(direction: Axis.horizontal, children: const [
-            Expanded(flex: 1,child: LeftPanel(),),
-            Expanded(flex: 6,child: RightPanel(),),
-          ],),
+        body: Stack(
+          children: [
+            Text('asd'),
+            Flex(direction: Axis.horizontal, children: const [
+              Expanded(flex: 1,child: LeftPanel(),),
+              Expanded(flex: 6,child: RightPanel(),),
+            ],),
+          ],
         )
       );
   }

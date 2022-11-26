@@ -6,15 +6,12 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <flutter_acrylic/flutter_acrylic_plugin.h>
 #include <irondash_engine_context/irondash_engine_context_plugin_c_api.h>
 #include <screen_retriever/screen_retriever_plugin.h>
 #include <super_native_extensions/super_native_extensions_plugin_c_api.h>
 #include <window_manager/window_manager_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  FlutterAcrylicPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("FlutterAcrylicPlugin"));
   IrondashEngineContextPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("IrondashEngineContextPluginCApi"));
   ScreenRetrieverPluginRegisterWithRegistrar(
