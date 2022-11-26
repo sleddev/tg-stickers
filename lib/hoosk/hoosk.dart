@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -36,47 +38,30 @@ hIf() {
 }
 
 Widget hHover(Color hoverColor, Widget? child) {
-  return _Hover(hoverColor: hoverColor,child: child);
+  return _Hover(hoverColor, child);
 }
 
-class _Hover extends StatefulWidget {
+class _Hover extends StatelessWidget {
+  const _Hover(this.hoverColor, this.child, {super.key});
+  final Color hoverColor;
   final Widget? child;
-  final Color? hoverColor;
-  const _Hover({super.key, this.child, this.hoverColor});
-
-  @override
-  State<_Hover> createState() => __HoverState();
-}
-
-class __HoverState extends State<_Hover> {
-  Color? hoverColor;
-
-  @override
-  initState() {
-    //hoverColor = widget.hoverColor;
-
-
-    super.initState();
-  }
-
-  onEnter() {
-    setState(() {
-      hoverColor = widget.hoverColor;
-    });
-  }
-  onExit() {
-    setState(() {
-      hoverColor = Colors.transparent;
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
-    
+    var currentColor = Writable<Color?>(Colors.transparent);
+
+    onEnter() {
+      currentColor.value = hoverColor;
+    }
+    onExit() {
+      currentColor.value = Colors.transparent;
+    }
+
     return MouseRegion(
       onEnter: (event) => onEnter(),
       onExit: (event) => onExit(),
-      child: Container(color: hoverColor, child: widget.child)
+      child: hListen(currentColor, (value) =>  Container(color: value, child: child))
     );
   }
 }
