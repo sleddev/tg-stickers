@@ -37,6 +37,8 @@ class Controller {
   var currentPack = Writable<List<Widget>>([]);
   var currentPackName = Writable<String>('');
 
+  var stickerAreaOverlay = Writable<Widget>(Container());
+
   Controller() {
     init();
   }
@@ -62,6 +64,7 @@ class Controller {
     imgPath.listSync().forEach((element) => imgList.add(sticker(File(element.path))));
     currentPackName.value = packToLoad.name;
     currentPack.value = imgList;
+    stickerAreaOverlay.value = Container();
   }
 }
 
@@ -102,15 +105,10 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xff333333),
-        body: Stack(
-          children: [
-            Text('asd'),
-            Flex(direction: Axis.horizontal, children: const [
-              Expanded(flex: 1,child: LeftPanel(),),
-              Expanded(flex: 6,child: RightPanel(),),
-            ],),
-          ],
-        )
+        body: Flex(direction: Axis.horizontal, children: const [
+          Expanded(flex: 1,child: LeftPanel(),),
+          Expanded(flex: 6,child: RightPanel(),),
+        ],)
       );
   }
 }
