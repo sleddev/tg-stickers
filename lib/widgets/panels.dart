@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:blur/blur.dart';
 import 'package:path/path.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
@@ -140,11 +141,17 @@ class StickerArea extends StatelessWidget {
       );
     }
 
-    return gridView();
+    return Stack(children: [
+        gridView(),
+        hListen(c.stickerAreaOverlay, (value) => SizedBox(width: double.infinity, height: double.infinity, child: value))
+      ]
+    );
   }
 }
 
 Widget sticker(File imageFile) {
+  var c = getIt<Controller>();
+
   return GestureDetector(
     child: Image.file(File(imageFile.path), isAntiAlias: true, filterQuality: FilterQuality.medium),
     onTap: () async {
@@ -157,5 +164,35 @@ Widget sticker(File imageFile) {
       }
       await ClipboardWriter.instance.write([item]);
     },
+    onSecondaryTap: () => c.stickerAreaOverlay.value = bigSticker(imageFile),
   );
+}
+
+Widget bigSticker(File imageFile) {
+  var c = getIt<Controller>();
+  return GestureDetector(
+    onTap: () => c.stickerAreaOverlay.value = Container(),
+    onSecondaryTap: () => c.stickerAreaOverlay.value = Container(),
+    child: Blur(
+      blur: 10,
+      child: Container(),
+      overlay: Container(width: double.infinity, color: Color(0x77000000) ,padding: EdgeInsets.all(65), 
+        child: TransparentImageButton.assets(
+          imageFile,
+          onTapInside: () async {
+            var imageBytes = await imageFile.readAsBytes();
+            var item = DataWriterItem(suggestedName: basename(imageFile.path));
+            if (Platform.isWindows) {
+              item.add(Formats.fileUri(imageFile.uri));
+            } else {
+              item.add(Formats.png(imageBytes));
+            }
+            await ClipboardWriter.instance.write([item]);
+          },
+          onTapOutside: () => c.stickerAreaOverlay.value = Container(),
+          
+        )
+      ),
+    )
+    );
 }
