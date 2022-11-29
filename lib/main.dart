@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tgstickers/config_manager.dart';
 import 'package:tgstickers/hoosk/hoosk.dart';
+import 'package:tgstickers/widgets/toast.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'widgets/panels.dart';
@@ -30,6 +31,7 @@ void main() {
   GetIt.I.registerSingleton<Controller>(Controller());
 
   runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class Controller {
@@ -38,6 +40,9 @@ class Controller {
   var currentPackName = Writable<String>('');
 
   var stickerAreaOverlay = Writable<Widget>(Container());
+  var toastOverlay = Writable<Widget>(Container());
+  var toastIcon = Writable<IconData>(Icons.check);
+  var toastColor = Writable<Color>(Colors.teal);
 
   Controller() {
     init();
@@ -65,6 +70,16 @@ class Controller {
     currentPackName.value = packToLoad.name;
     currentPack.value = imgList;
     stickerAreaOverlay.value = Container();
+  }
+
+  void infoToast(String message) {
+    toastColor.value = Colors.teal;
+    toastIcon.value = Icons.check;
+
+    toastOverlay.value = Toast(message);
+  }
+  void hideToast() {
+    toastOverlay.value = Container();
   }
 }
 

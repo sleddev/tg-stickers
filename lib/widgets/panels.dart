@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:blur/blur.dart';
@@ -143,7 +144,8 @@ class StickerArea extends StatelessWidget {
 
     return Stack(children: [
         gridView(),
-        hListen(c.stickerAreaOverlay, (value) => SizedBox(width: double.infinity, height: double.infinity, child: value))
+        hListen(c.stickerAreaOverlay, (value) => SizedBox(width: double.infinity, height: double.infinity, child: value)),
+        hListen(c.toastOverlay, (value) => value),
       ]
     );
   }
@@ -163,6 +165,8 @@ Widget sticker(File imageFile) {
         item.add(Formats.png(imageBytes));
       }
       await ClipboardWriter.instance.write([item]);
+      c.infoToast('Sticker copied');
+      var timer = Timer(Duration(milliseconds: 1300), (() => c.hideToast()));
     },
     onSecondaryTap: () => c.stickerAreaOverlay.value = bigSticker(imageFile),
   );
@@ -188,6 +192,8 @@ Widget bigSticker(File imageFile) {
               item.add(Formats.png(imageBytes));
             }
             await ClipboardWriter.instance.write([item]);
+            c.infoToast('Sticker copied');
+            var timer = Timer(Duration(milliseconds: 1300), (() => c.hideToast()));
           },
           onTapOutside: () => c.stickerAreaOverlay.value = Container(),
           
