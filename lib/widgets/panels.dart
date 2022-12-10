@@ -17,50 +17,52 @@ class LeftPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = getIt<Controller>();
-
-    Widget packsWidget() {
-      return Column(children:
-        [...hEach(c.stickerPacks.value, 
-          (item, i) => Container(
-            padding: const EdgeInsets.all(4),
-            child: 
-              GestureDetector(
-                onTap: () => c.changePack(item.name),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: hHover(const Color(0x33ffffff), Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Image.file(item.coverFile, filterQuality: FilterQuality.medium, isAntiAlias: true),
-                  )),
-                ),
-              )
-          )
-        ),
-        ]
-      );
-    }
+    final sc = ScrollController();
 
     return Container(color: const Color(0xff3a3a3a),
       child: Column(children: [
         SizedBox(
           width: double.infinity,
           height: 32,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              highlightColor: const Color(0xff9f9f9f),
-              splashColor: Colors.transparent,
-              hoverColor: const Color(0xff5b5b5b),
-              onHighlightChanged: (value) {},
-              onHover: (value) {},
-              onTap: () {
-              },
-              child: const Icon(FluentSystemIcons.ic_fluent_add_regular, color: Color(0xfff2f2f2), size: 18),
-            ),
+          child: GestureDetector(
+            onTap: () {
+              //c.addOverlay.value = AddOverlay();
+                c.addVisible.value = true;
+              // Timer(Duration(milliseconds: 5), () {
+              // },);
+            },
+            child: hHover(const Color(0x33ffffff), const Icon(FluentSystemIcons.ic_fluent_add_regular, color: Color(0xfff2f2f2), size: 18))
           ),
         ),
-        hListen(c.stickerPacks, (value) => packsWidget())
-      ]),  
+        Expanded(
+          child: hListen(c.stickerPacks, (value) => RawScrollbar(
+            controller: sc,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: ListView.builder(
+                controller: sc,
+                itemCount: value.length,
+                itemBuilder: (context, index) => AspectRatio(
+                  aspectRatio: 1 / 1,
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => c.changePack(value[index].name),
+                      child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: hHover(const Color(0x33ffffff), Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Image.file(value[index].coverFile, filterQuality: FilterQuality.medium, isAntiAlias: true),
+                      )),
+                    ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )),
+        )
+      ]),
     );
   }
 }
@@ -116,13 +118,14 @@ class StickerArea extends StatelessWidget {
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5, mainAxisSpacing: 2, crossAxisSpacing: 2),
             delegate: SliverChildBuilderDelegate(
-              (context, index) => ClipRRect(borderRadius: BorderRadius.circular(8), child: hHover(Color(0x33ffffff), Container(padding: const EdgeInsets.all(2), child: value[index]))),
+              (context, index) => ClipRRect(borderRadius: BorderRadius.circular(8), child: hHover(const Color(0x33ffffff), Container(padding: const EdgeInsets.all(2), child: value[index]))),
               childCount: value.length
             ),
           ),
         ),
       );
     }
+
 
     Widget gridView() {
       var scrollController = AdjustableScrollController(20);
@@ -166,7 +169,7 @@ Widget sticker(File imageFile) {
       }
       await ClipboardWriter.instance.write([item]);
       c.infoToast('Sticker copied');
-      var timer = Timer(Duration(milliseconds: 1300), (() => c.hideToast()));
+      Timer(const Duration(milliseconds: 1300), (() => c.hideToast()));
     },
     onSecondaryTap: () => c.stickerAreaOverlay.value = bigSticker(imageFile),
   );
@@ -179,8 +182,7 @@ Widget bigSticker(File imageFile) {
     onSecondaryTap: () => c.stickerAreaOverlay.value = Container(),
     child: Blur(
       blur: 10,
-      child: Container(),
-      overlay: Container(width: double.infinity, color: Color(0x77000000) ,padding: EdgeInsets.all(65), 
+      overlay: Container(width: double.infinity, height: double.infinity, color: const Color(0x77000000) ,padding: const EdgeInsets.all(65), 
         child: TransparentImageButton.assets(
           imageFile,
           onTapInside: () async {
@@ -193,12 +195,13 @@ Widget bigSticker(File imageFile) {
             }
             await ClipboardWriter.instance.write([item]);
             c.infoToast('Sticker copied');
-            var timer = Timer(Duration(milliseconds: 1300), (() => c.hideToast()));
+            Timer(const Duration(milliseconds: 1300), (() => c.hideToast()));
           },
           onTapOutside: () => c.stickerAreaOverlay.value = Container(),
           
         )
       ),
+      child: Container(),
     )
     );
 }
