@@ -16,19 +16,32 @@ class Toast extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: EdgeInsets.fromLTRB(90, 0, 90, 10),
-          child: Container(
-            decoration: BoxDecoration(boxShadow: [BoxShadow(spreadRadius: 5, blurRadius: 10, color: Color(0x55000000))]),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                height: 40,
-                color: Colors.grey[500],
-                child: Row(
-                  children: [
-                    SizedBox(width: 40, child: Icon(c.toastIcon.value, color: Colors.white, size: 25,)),
-                    Expanded(child: Center(child: Text(message, style: TextStyle(color: Colors.white, fontSize: 20),)))
-                  ])
+          padding: const EdgeInsets.fromLTRB(116.5, 0, 116.5, 10),
+          child: hFade(c.toastStatus, 100,
+            Container(
+              decoration: const BoxDecoration(
+                boxShadow: [BoxShadow(spreadRadius: 5, blurRadius: 10, color: Color(0x55333333))]),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xff3a3a3a),
+                    border: Border.all(color: const Color(0xff888888), strokeAlign: StrokeAlign.center),
+                    borderRadius: BorderRadius.circular(8)
+                  ),
+                  height: 30,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 30, child: Icon(c.toastIcon.value, color: const Color(0xffbbbbbb), size: 20,)),
+                      Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(padding: EdgeInsets.only(top: 1.5), child: Text(message, style: const TextStyle(color: Color(0xffbbbbbb), fontSize: 16),)),
+                        ],
+                      ))
+                    ])
+                ),
               ),
             ),
           ),

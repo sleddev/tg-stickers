@@ -123,9 +123,10 @@ bool Win32Window::CreateAndShow(const std::wstring& title,
       Scale(size.width, scale_factor), Scale(size.height, scale_factor),
       nullptr, nullptr, GetModuleHandle(nullptr), this);
 
-  SetWindowLong(window, GWL_STYLE, 0);
+  SetWindowLong(window, GWL_STYLE, WS_CAPTION|WS_POPUP);
   // TODO: extract offset and taskbar height into variables
-  SetWindowPos(window, 0, GetSystemMetrics(SM_CXSCREEN) - 440 - 30, GetSystemMetrics(SM_CYSCREEN) - 380 - 40 - 30, 100, 100, SWP_FRAMECHANGED);
+  //SetWindowPos(window, 0, GetSystemMetrics(SM_CXSCREEN) - 440 - 30, GetSystemMetrics(SM_CYSCREEN) - 380 - 40 - 30, 100, 100, SWP_DRAWFRAME);
+  SetWindowPos(window, 0, GetSystemMetrics(SM_CXSCREEN) - 440 - 30, GetSystemMetrics(SM_CYSCREEN) - 380 - 40 - 30, 100, 100, SWP_NOZORDER|SWP_NOOWNERZORDER|SWP_NOSIZE|SWP_FRAMECHANGED);
 
   if (!window) {
     return false;
