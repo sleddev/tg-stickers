@@ -1,14 +1,20 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tgstickers/config_manager.dart';
 import 'package:tgstickers/hoosk/hoosk.dart';
+import 'package:tgstickers/telegram/downloader.dart';
+import 'package:tgstickers/widgets/settings.dart';
 import 'package:tgstickers/widgets/toast.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'widgets/addoverlay.dart';
 import 'widgets/panels.dart';
 
 void main() {
@@ -31,7 +37,6 @@ void main() {
   GetIt.I.registerSingleton<Controller>(Controller());
 
   runApp(const MyApp());
-  runApp(const MyApp());
 }
 
 class Controller {
@@ -40,25 +45,39 @@ class Controller {
   var currentPackName = Writable<String>('');
 
   var stickerAreaOverlay = Writable<Widget>(Container());
-  var toastOverlay = Writable<Widget>(Container());
-  var toastIcon = Writable<IconData>(Icons.check);
+  var addOverlay = Writable<Widget>(const AddOverlay());
+  var toastOverlay = Writable<Widget>(const Toast('Sticker copied'));
+  var toastStatus = Writable<bool>(false);
+  var toastIcon = Writable<IconData>(FluentSystemIcons.ic_fluent_copy_regular);
   var toastColor = Writable<Color>(Colors.teal);
+
+  var settingsOpen = Writable<bool>(false);
+  var addVisible = Writable<bool>(false);
+
+  var lastPosition = const Offset(0, 0);
+  var lastSize = const Size(440, 380);
 
   Controller() {
     init();
   }
 
   void init() async {
+    stickerPacks.value = (await getConfig()).stickerPacks;
+    changePack(stickerPacks.value.first.name);
+    //infoToast('Sticker copied');
+  }
+  Future<ConfigData> getConfig() async {
     String path = await getPath();
-    JSON configJson = jsonDecode(await File('$path/config.json').readAsString());
+
+    File configFile = File('$path/config.json');
+    JSON configJson = jsonDecode(await configFile.readAsString());
     ConfigData config = ConfigData.fromJson(configJson, Directory(path));
 
-    stickerPacks.value = config.stickerPacks;
-    changePack(stickerPacks.value.first.name);
+    return config;
   }
 
   Future<String> getPath() async {
-    return '${(await getApplicationDocumentsDirectory()).path}\\TGStickers\\';
+    return '${(await getApplicationDocumentsDirectory()).path}/TGStickers/';
   }
 
   void changePack(String name) async {
@@ -66,20 +85,43 @@ class Controller {
     var packToLoad = stickerPacks.value.firstWhere((element) => element.name == name);
     var imgPath = Directory('$res${packToLoad.basePath}');
     var imgList = <Widget>[];
-    imgPath.listSync().forEach((element) => imgList.add(sticker(File(element.path))));
+    var fileList = imgPath.listSync();
+    fileList.removeWhere((element) => element.path.contains('cover.png'));
+    for (var element in fileList) {
+      imgList.add(sticker(File(element.path)));
+    }
     currentPackName.value = packToLoad.name;
     currentPack.value = imgList;
     stickerAreaOverlay.value = Container();
   }
 
+  //TODO: fix UI rebuild not triggering
+  //TODO: duplicate detection
+  void addPack(String name, String basePath, String coverPath) async {
+    if (!stickerPacks.value.every((element) => element.name != name)) return;
+    File configFile = File('${await getPath()}/config.json');
+    ConfigData config = await getConfig();
+    config.stickerPacks.add(StickerPackConfig.fromJson({
+      'name': name,
+      'base_path': basePath,
+      'cover_path': coverPath,
+    }, Directory(await getPath())));
+
+    var encoder = const JsonEncoder.withIndent('  ');
+    String prettyJson = encoder.convert(config.toJson());
+    configFile.writeAsString(prettyJson);
+
+    stickerPacks.value = config.stickerPacks;
+  }
+
   void infoToast(String message) {
     toastColor.value = Colors.teal;
-    toastIcon.value = Icons.check;
+    toastIcon.value = FluentSystemIcons.ic_fluent_copy_regular;
 
-    toastOverlay.value = Toast(message);
+    toastStatus.value = true;
   }
   void hideToast() {
-    toastOverlay.value = Container();
+    toastStatus.value = false;
   }
 }
 
@@ -88,10 +130,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = getIt<Controller>();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Welcome to Flutter',
-      home: const MyHomePage(),
+      home: hListen(c.settingsOpen, (value) => !value ?
+        const HomePage() : const SettingsPage()
+      ),
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: Colors.blue,
@@ -113,17 +159,24 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final c = getIt<Controller>();
+
     return Scaffold(
         backgroundColor: const Color(0xff333333),
-        body: Flex(direction: Axis.horizontal, children: const [
-          Expanded(flex: 1,child: LeftPanel(),),
-          Expanded(flex: 6,child: RightPanel(),),
-        ],)
+        body: Stack(
+          children: [
+            Flex(direction: Axis.horizontal, children: const [
+              Expanded(flex: 1,child: LeftPanel(),),
+              Expanded(flex: 6,child: RightPanel(),),
+            ],),
+            hListen(c.addOverlay, (value) => value,)
+          ],
+        )
       );
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:tgstickers/hoosk/hoosk.dart';
+import 'package:tgstickers/main.dart';
 import 'package:window_manager/window_manager.dart';
 
 class TitleBar extends StatelessWidget {
@@ -18,19 +22,25 @@ class TitleBar extends StatelessWidget {
             const Expanded(
               child: DragToMoveArea(child: DragBar())
             ),
-            SizedBox(
-              width: 45,
-              height: double.infinity,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  highlightColor: const Color(0xff9f9f9f),
-                  splashColor: Colors.transparent,
-                  hoverColor: const Color(0xff5b5b5b),
-                  onHighlightChanged: (value) {},
-                  onHover: (value) {},
-                  onTap: () {},
-                  child: const Icon(FluentSystemIcons.ic_fluent_settings_regular, color: Color(0xfff2f2f2), size: 18),
+            GestureDetector(
+              onTap: () async {
+                final c = getIt<Controller>();
+                c.settingsOpen.value = true;
+                c.lastPosition = await windowManager.getPosition();
+                log("${c.lastPosition.dx} ${c.lastPosition.dy}");
+
+                await windowManager.hide();
+                windowManager.setPosition(const Offset(0, 0));
+                windowManager.setSize(const Size(800, 600));
+                windowManager.setAlignment(Alignment.center).then((value) => windowManager.show());
+
+              },
+              child: SizedBox(
+                width: 45,
+                height: double.infinity,
+                child: hHover(
+                  const Color(0x33ffffff),
+                  const Icon(FluentSystemIcons.ic_fluent_settings_regular, color: Color(0xfff2f2f2), size: 18),
                 ),
               ),
             ),
