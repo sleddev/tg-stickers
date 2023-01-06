@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../config_manager.dart';
 import '../hoosk/hoosk.dart';
 import '../main.dart';
 import '../telegram/downloader.dart';
@@ -14,6 +17,35 @@ import '../telegram/downloader.dart';
 class DownloadController {
   var statusText = Writable<String>('');
   var stickerLink = '';
+  var token = '';
+
+  Future<String> getPath() async {
+    return '${(await getApplicationDocumentsDirectory()).path}/TGStickers/';
+  }
+
+  Future<ConfigData> getConfig() async {
+    String path = await getPath();
+
+    File configFile = File('$path/config.json');
+    JSON configJson = jsonDecode(await configFile.readAsString());
+    ConfigData config = ConfigData.fromJson(configJson, Directory(path));
+
+    return config;
+  }
+
+  void saveToken(String token) async {
+    File configFile = File('${await getPath()}/config.json');
+    ConfigData config = await getConfig();
+    config.token = token;
+
+    var encoder = const JsonEncoder.withIndent('  ');
+    String prettyJson = encoder.convert(config.toJson());
+    configFile.writeAsString(prettyJson);
+  }
+
+  Future<String> getToken() async {
+    return (await getConfig()).token;
+  }
 }
 
 class AddOverlay extends StatelessWidget {
@@ -124,13 +156,28 @@ class DownloadPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dc = getIt<DownloadController>();
+
     return Flex(
       direction: Axis.vertical,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(flex: 3, child: Container(padding: const EdgeInsets.all(8), child: Wrap(children: const [LinkField()]))),
+        Expanded(flex: 3, child: Container(padding: const EdgeInsets.all(8), child: Wrap(children: [LinkField(
+          name: 'Link to sticker pack',
+          placeholder: 'https://t.me/addstickers/hiostickerpack',
+          onChanged: (value) => dc.stickerLink = value,
+          getText: () => Future(() => ''),
+          controller: TextEditingController(),
+        )]))),
+        Expanded(flex: 3, child: Container(padding: const EdgeInsets.all(8), child: Wrap(children: [LinkField(
+          name: 'Telegram token',
+          placeholder: '1234567890:ABCdEFG...',
+          onChanged: (value) => dc.token = value,
+          getText: dc.getToken,
+          controller: TextEditingController(),
+        )]))),
         Expanded(flex: 8, child: Container(padding: const EdgeInsets.all(8), child: DownloadStatus())),
-        Expanded(flex: 2, child: Container(alignment: Alignment.bottomRight, padding: const EdgeInsets.all(8), child: Wrap(children: const [DownloadButton()]),))
+        Expanded(flex: 2, child: Container(alignment: Alignment.bottomRight, padding: const EdgeInsets.all(4), child: Wrap(children: const [DownloadButton()]),))
       ],
     );
   }
@@ -146,7 +193,8 @@ class DownloadButton extends StatelessWidget {
       final dc = getIt<DownloadController>();
       var packLink = dc.stickerLink.split('/')[dc.stickerLink.split('/').length - 1];
 
-      var downloader = StickerDownloader('TOKEN_HERE'); //!!! TOKEN HERE
+      dc.saveToken(dc.token);
+      var downloader = StickerDownloader(dc.token);
 
       dc.statusText.value = 'Getting pack info...';
       var stickerPack = await downloader.getPack(packLink);
@@ -176,11 +224,21 @@ class DownloadButton extends StatelessWidget {
 }
 
 class LinkField extends StatelessWidget {
-  const LinkField({super.key});
+  const LinkField({required this.name, required this.placeholder, this.onChanged, required this.getText, required this.controller, super.key});
+  final String name;
+  final String placeholder;
+  final Function(String)? onChanged;
+  final TextEditingController controller;
+  final Future<String> Function() getText;
+
+  loadToken() async {
+    String text = await getText();
+    controller.text = text;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final dc = getIt<DownloadController>();
+    loadToken();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -193,7 +251,7 @@ class LinkField extends StatelessWidget {
             alignment: Alignment.topLeft,
             fit: BoxFit.fitHeight,
             child: Text(
-              'Link to sticker pack'.toUpperCase(),
+              name.toUpperCase(),
               textAlign: TextAlign.left,
               style: const TextStyle(
                 color: Color(0xffbbbbbb),
@@ -214,9 +272,10 @@ class LinkField extends StatelessWidget {
             textSelectionTheme: const TextSelectionThemeData(selectionColor: Color(0x33f2f2f2))
           ),
             child: TextField(
-              onChanged: (value) => dc.stickerLink = value,
+              controller: controller,
+              onChanged: onChanged,
               maxLines: 1,
-              decoration: const InputDecoration(isDense: true, hintText: 'https://t.me/addstickers/hiostickerpack', hintStyle: TextStyle(color: Color(0x50f2f2f2)), border: InputBorder.none),
+              decoration: InputDecoration(isDense: true, hintText: placeholder, hintStyle: const TextStyle(color: Color(0x50f2f2f2)), border: InputBorder.none),
               cursorColor: const Color(0xfff2f2f2),
               style: const TextStyle(color: Color(0xfff2f2f2), fontWeight: FontWeight.normal,),
 
