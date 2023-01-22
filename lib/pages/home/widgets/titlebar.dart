@@ -43,20 +43,23 @@ class TitleBar extends StatelessWidget {
             child: Flex(
               direction: Axis.horizontal,
               children: [
-                Expanded(child: DragToMoveArea(child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 32),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: Container(
-                        width: 32,
-                        height: 3,
-                        color: theme.dragBarColor
+                Expanded(child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: DragToMoveArea(child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 32),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: Container(
+                          width: 32,
+                          height: 3,
+                          color: theme.dragBarColor
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  ),
                 )),
                 SizedBox(
                   width: 46,

@@ -34,7 +34,6 @@ class StickerProvider extends ChangeNotifier {
 
   Future<void> loadPacks({bool notify = true}) async {
     stickerPacks = (await configProvider.getConfig()).stickerPacks;
-    print(File('${await configProvider.getPath()}/config.json').readAsStringSync());
 
     if (notify) notifyListeners();
   }
