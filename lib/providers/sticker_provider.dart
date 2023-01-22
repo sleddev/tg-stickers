@@ -24,12 +24,17 @@ class StickerProvider extends ChangeNotifier {
   }
 
   Future<void> init() async {
+    var path = await configProvider.getPath();
+    await Directory('$path/stickerpacks').create(recursive: true);
+    await File('$path/config.json').create(recursive: true);
+
     await loadPacks();
     if (stickerPacks.isNotEmpty) await changePack(index: 0);
   }
 
   Future<void> loadPacks({bool notify = true}) async {
     stickerPacks = (await configProvider.getConfig()).stickerPacks;
+    print(File('${await configProvider.getPath()}/config.json').readAsStringSync());
 
     if (notify) notifyListeners();
   }
@@ -46,7 +51,7 @@ class StickerProvider extends ChangeNotifier {
     if (selectedPack == null) return;
 
     var path = await configProvider.getPath();
-    var imgPath = Directory('$path${selectedPack!.basePath}');
+    var imgPath = Directory(selectedPack!.basePath).isAbsolute ? Directory(selectedPack!.basePath) : Directory('$path${selectedPack!.basePath}');
     var fileList = imgPath.listSync();
     fileList.removeWhere((element) => element.path.contains('cover.png'));
 

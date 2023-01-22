@@ -1,6 +1,6 @@
 ## TG Stickers Everywhere
 
-![WIP Screenshot](https://i.imgur.com/GU1Vi1l.png)
+![WIP Screenshot](https://i.imgur.com/99B0axW.png)
 
 Use Telegram stickers in other applications (for example Discord).
 

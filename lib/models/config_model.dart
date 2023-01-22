@@ -26,7 +26,7 @@ class StickerPackConfig {
   String coverPath;
 
   StickerPackConfig.fromJson(Map<String, dynamic> json, Directory wd)
-    : coverFile = File(wd.path + json['cover_path']),
+    : coverFile = File(json['cover_path']).isAbsolute ? File(json['cover_path']) : File(wd.path + json['cover_path']),
       coverPath = json['cover_path'],
       basePath = json['base_path'],
       name = json['name'],

@@ -16,7 +16,8 @@ class ConfigProvider extends ChangeNotifier {
     String path = await getPath();
 
     File configFile = File('$path/config.json');
-    Map<String, dynamic> configJson = jsonDecode(await configFile.readAsString());
+    String configString = await configFile.readAsString();
+    Map<String, dynamic> configJson = jsonDecode(configString.isEmpty ? '{}' : configString);
     ConfigData config = ConfigData.fromJson(configJson, Directory(path));
 
     return config;
