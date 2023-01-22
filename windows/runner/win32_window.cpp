@@ -1,4 +1,5 @@
 #include "win32_window.h"
+#include "Windows.h"
 
 #include <flutter_windows.h>
 
@@ -69,7 +70,6 @@ class WindowClassRegistrar {
 WindowClassRegistrar* WindowClassRegistrar::instance_ = nullptr;
 
 const wchar_t* WindowClassRegistrar::GetWindowClass() {
-  HBRUSH hb = ::CreateSolidBrush(RGB(51,51,51));
   if (!class_registered_) {
     WNDCLASS window_class{};
     window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -80,7 +80,7 @@ const wchar_t* WindowClassRegistrar::GetWindowClass() {
     window_class.hInstance = GetModuleHandle(nullptr);
     window_class.hIcon =
         LoadIcon(window_class.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
-    window_class.hbrBackground = hb;
+    window_class.hbrBackground = 0;
     window_class.lpszMenuName = nullptr;
     window_class.lpfnWndProc = Win32Window::WndProc;
     RegisterClass(&window_class);
@@ -140,10 +140,17 @@ LRESULT CALLBACK Win32Window::WndProc(HWND const window,
                                       UINT const message,
                                       WPARAM const wparam,
                                       LPARAM const lparam) noexcept {
+  if (message == WM_TIMER) {
+    SetClassLongPtr(window, GCLP_HBRBACKGROUND, (LONG_PTR)NULL);
+    DeleteObject((HBRUSH)GetClassLongPtr(window, GCLP_HBRBACKGROUND));
+  }
   if (message == WM_NCCREATE) {
     auto window_struct = reinterpret_cast<CREATESTRUCT*>(lparam);
     SetWindowLongPtr(window, GWLP_USERDATA,
                      reinterpret_cast<LONG_PTR>(window_struct->lpCreateParams));
+
+    SetClassLongPtr(window, GCLP_HBRBACKGROUND, (LONG_PTR)CreateSolidBrush(RGB(51, 51, 51)));
+    SetTimer(window, 1, 2500, NULL);
 
     auto that = static_cast<Win32Window*>(window_struct->lpCreateParams);
     EnableFullDpiSupportIfAvailable(window);
