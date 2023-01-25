@@ -8,6 +8,7 @@ class ThemeProvider extends ChangeNotifier {
   var hoverColor = const Color(0x33ffffff);
   var iconColor = const Color(0xFFf2f2f2);
   var borderColor = const Color(0xFF535353);
+  var hintColor = const Color(0xFF535353);
   var dragBarColor = const Color(0xFF9a9a9a);
   var scrollBarColor = const Color(0xFF666666);
   var headerColor = const Color(0xFFbbbbbb);

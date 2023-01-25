@@ -12,6 +12,12 @@ import 'package:tgstickers/providers/window_provider.dart';
 
 import 'providers/download_provider.dart';
 
+//TODO: stickerpack update checker
+//TODO: stickerpack folder not found message
+//TODO: reorder sticker packs menu
+//TODO: delete sticker packs option
+//TODO: settings coming soon screen
+
 class App extends StatelessWidget {
   final StickerProvider stickers;
   final ConfigProvider configProvider;

@@ -7,6 +7,7 @@ class DefaultTheme {
   final hoverColor =  const Color(0x33ffffff);
   final iconColor =  const Color(0xFFf2f2f2);
   final borderColor = const Color(0xFF535353);
+  final hintColor = const Color(0xFF535353);
   final dragBarColor = const Color(0xFF9a9a9a);
   final scrollBarColor = const Color(0xFF666666);
   final headerColor = const Color(0xFFbbbbbb);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tgstickers/pages/home/widgets/add_hint.dart';
 import 'package:tgstickers/pages/home/widgets/big_sticker.dart';
 import 'package:tgstickers/providers/theme_provider.dart';
 import 'package:tgstickers/providers/toast_provider.dart';
@@ -18,8 +19,9 @@ class RightPanel extends StatelessWidget {
 
     var scrollController = AdjustableScrollController(20);
 
-    //TODO: Choose a stickerpack panel (or add)
-    return stickers.selectedPack == null ? Container() :
+    if (stickers.selectedPack == null) return Container();
+    return stickers.stickerPacks.isEmpty ?
+    const AddReminder() :
     Stack(
       children: [
         RawScrollbar(
