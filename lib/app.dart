@@ -17,6 +17,7 @@ import 'providers/download_provider.dart';
 //TODO: settings coming soon screen
 //TODO: only display image files
 //TODO: emoji on preview
+//TODO: edit option in PackMenu
 
 class App extends StatelessWidget {
   final StickerProvider stickers;

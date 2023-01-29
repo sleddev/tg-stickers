@@ -46,6 +46,6 @@ class ConfigProvider extends ChangeNotifier {
 
     var encoder = const JsonEncoder.withIndent('  ');
     String prettyJson = encoder.convert(updated.toJson());
-    configFile.writeAsString(prettyJson);
+    await configFile.writeAsString(prettyJson);
   }
 }

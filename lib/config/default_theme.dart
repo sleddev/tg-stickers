@@ -32,4 +32,10 @@ class DefaultTheme {
   final convertColor = const Color(0xFF777777);
   final doneColor = const Color(0xFF00ff60);
   final errorColor = const Color(0xFFff5050);
+
+  //PackMenu
+  final pmBlurColor = const Color(0xFF282828);
+  final pmBorderColor = const Color(0xFF666666);
+  final pmTextColor = const Color(0xFFbbbbbb);
+  final pmBackgroundColor = const Color(0xFF3a3a3a);
 }

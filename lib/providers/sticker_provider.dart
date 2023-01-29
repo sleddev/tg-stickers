@@ -159,7 +159,7 @@ class StickerProvider extends ChangeNotifier {
       },
     );
 
-    loadPacks();
+    await loadPacks();
     notifyListeners();
   }
   Future<void> moveDown() async {
@@ -177,7 +177,7 @@ class StickerProvider extends ChangeNotifier {
       },
     );
 
-    loadPacks();
+    await loadPacks();
     notifyListeners();
   }
 }
