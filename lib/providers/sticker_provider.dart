@@ -19,6 +19,13 @@ class StickerProvider extends ChangeNotifier {
   ValueNotifier<bool> bigStickerVisible = ValueNotifier(false);
   Duration bigStickerTransition = const Duration(milliseconds: 65);
 
+  StickerPackConfig? menuPack;
+  ValueNotifier<bool> packMenuVisible = ValueNotifier(false);
+  ValueNotifier<bool> packMenuOpen = ValueNotifier(false);
+  ValueNotifier<bool> packMenuDelete = ValueNotifier(false);
+  ValueNotifier<String> packMenuStatus = ValueNotifier('menu');
+  Duration packMenuTransition = const Duration(milliseconds: 65);
+
   StickerProvider(this.configProvider) {
     init();
   }
@@ -95,6 +102,81 @@ class StickerProvider extends ChangeNotifier {
         return value;
       },
     );
+    loadPacks();
+    notifyListeners();
+  }
+
+  void showPackMenu(int index) {
+    menuPack = stickerPacks[index];
+    notifyListeners();
+    packMenuVisible.value = true;
+    packMenuOpen.value = true;
+  }
+
+  void hidePackMenu() {
+    packMenuOpen.value = false;
+    Timer(packMenuTransition, () {
+      packMenuVisible.value = false;
+      packMenuStatus.value = 'menu';
+      packMenuDelete.value = false;
+    });
+  }
+
+  void setPackMenuStatus(String status) {
+    packMenuStatus.value = status;
+  }
+
+  Future<void> removePack(bool delete) async {
+    await configProvider.updateConfig(
+      updater: (value) async {
+        if (menuPack == null) return value;
+        value.stickerPacks.removeWhere((element) => element.id == menuPack!.id);
+        return value;
+      },
+    );
+    if (delete) await Directory(await configProvider.getPath() + menuPack!.basePath).delete(recursive: true);
+
+    selectedPack = null;
+
+    loadPacks();
+    notifyListeners();
+
+    hidePackMenu();
+  }
+
+  Future<void> moveUp() async {
+    if (menuPack == null) return;
+
+    await configProvider.updateConfig(
+      updater: (value) async {
+        var index = value.stickerPacks.indexWhere((element) => element.id == menuPack!.id);
+        if (index == 0 || value.stickerPacks.length == 1) return value;
+        var next = value.stickerPacks[index - 1];
+        value.stickerPacks.insert(index + 1, next);
+        value.stickerPacks.removeAt(index - 1);
+
+        return value;
+      },
+    );
+
+    loadPacks();
+    notifyListeners();
+  }
+  Future<void> moveDown() async {
+    if (menuPack == null) return;
+
+    await configProvider.updateConfig(
+      updater: (value) async {
+        var index = value.stickerPacks.indexWhere((element) => element.id == menuPack!.id);
+        if (index == value.stickerPacks.length - 1 || value.stickerPacks.length == 1) return value;
+        var next = value.stickerPacks[index + 1];
+        value.stickerPacks.removeAt(index + 1);
+        value.stickerPacks.insert(index, next);
+
+        return value;
+      },
+    );
+
     loadPacks();
     notifyListeners();
   }

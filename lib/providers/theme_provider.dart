@@ -33,4 +33,10 @@ class ThemeProvider extends ChangeNotifier {
   var convertColor = const Color(0xFF777777);
   var doneColor = const Color(0xFF00ff60);
   var errorColor = const Color(0xFFff5050);
+
+  //PackMenu
+  var pmBlurColor = const Color(0xFF282828);
+  var pmBorderColor = const Color(0xFF666666);
+  var pmTextColor = const Color(0xFFbbbbbb);
+  var pmBackgroundColor = const Color(0xFF3a3a3a);
 }

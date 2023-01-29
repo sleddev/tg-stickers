@@ -36,6 +36,7 @@ class LeftPanel extends StatelessWidget {
                         padding: const EdgeInsets.all(4),
                         child: GestureDetector(
                           onTap: () => stickers.changePack(index: index),
+                          onSecondaryTap: () => stickers.showPackMenu(index),
                           child: Image.file(
                             stickers.stickerPacks[index].coverFile,
                             filterQuality: FilterQuality.medium,

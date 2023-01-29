@@ -14,9 +14,9 @@ import 'providers/download_provider.dart';
 
 //TODO: stickerpack update checker
 //TODO: stickerpack folder not found message
-//TODO: reorder sticker packs menu
-//TODO: delete sticker packs option
 //TODO: settings coming soon screen
+//TODO: only display image files
+//TODO: emoji on preview
 
 class App extends StatelessWidget {
   final StickerProvider stickers;
