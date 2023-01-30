@@ -144,6 +144,7 @@ class LocalTab extends StatelessWidget {
             child: FileInputBox(
               controller: coverController,
               hint: 'C:\\...\\stickerpacks\\hiostickerpack\\cover.png',
+              isFile: true,
               onFolderTap: () async {
                 FilePickerResult? res = await FilePicker.platform.pickFiles(
                   dialogTitle: 'Path to sticker pack',

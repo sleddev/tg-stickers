@@ -48,6 +48,7 @@ class StickerProvider extends ChangeNotifier {
   Future<void> changePack({String? id, int? index }) async {
     if (id != null) selectedPack = stickerPacks.firstWhere((element) => element.id == id);
     if (index != null) selectedPack = stickerPacks[index];
+    hidePackMenu();
 
     loadCurrentPack();
     notifyListeners();

@@ -14,25 +14,24 @@ class PackMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        height: 32,
-        width: double.infinity,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Hover(
-            theme.hoverColor,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Hover(theme.hoverColor,
             child: Container(
-              padding: const EdgeInsets.only(left: 8, right: 8),
-              width: double.infinity,
-              height: double.infinity,
-              alignment: Alignment.centerLeft,
+              height: 32,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(color: theme.pmBorderColor),
+                borderRadius: BorderRadius.circular(8)
+              ),
               child: Text(
                 text,
                 style: TextStyle(
                   color: textColor,
-                  fontSize: 16
                 ),
               ),
             ),

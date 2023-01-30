@@ -16,7 +16,7 @@ class PackMenu extends StatelessWidget {
 
     Map<String, EdgeInsets> paddingMap = {
       '': const EdgeInsets.only(left: 100, right: 100),
-      'menu': const EdgeInsets.only(left: 100, right: 100),
+      'menu': const EdgeInsets.only(left: 80, right: 80),
       'delete': const EdgeInsets.only(left: 80, right: 80)
     };
 
@@ -25,23 +25,48 @@ class PackMenu extends StatelessWidget {
       'menu': Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          PackMenuItem(
-            onTap: () => stickers.moveUp(),
-            text: 'Move up',
-            textColor: theme.pmTextColor,
+          Container(
+            padding: const EdgeInsets.only(right: 8),
+            alignment: Alignment.topLeft,
+            child: Text(
+              stickers.menuPack!.name.toUpperCase(),
+              overflow: TextOverflow.fade,
+              softWrap: false,
+              maxLines: 1,
+              style: TextStyle(
+                color: theme.pmTextColor,
+                fontSize: 14,
+                fontWeight: FontWeight.bold
+              )
+            ),
           ),
-          const SizedBox(height: 4),
-          PackMenuItem(
-            onTap: () => stickers.moveDown(),
-            text: 'Move down',
-            textColor: theme.pmTextColor,
+          const SizedBox(height: 8),
+          Flex(
+            direction: Axis.horizontal,
+            children: [
+              Expanded(
+                child: PackMenuItem(
+                  text: 'Move up',
+                  textColor: theme.pmTextColor,
+                  onTap: () => stickers.moveUp(),
+                )
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: PackMenuItem(
+                  text: 'Move down',
+                  textColor: theme.pmTextColor,
+                  onTap: () => stickers.moveDown(),
+                )
+              )
+            ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           /*PackMenuItem(
             text: 'Edit',
             textColor: theme.pmTextColor,
           ),
-          const SizedBox(height: 4),*/
+          const SizedBox(height: 8),*/
           PackMenuItem(
             onTap: () => stickers.setPackMenuStatus('delete'),
             text: 'Remove',
@@ -49,147 +74,104 @@ class PackMenu extends StatelessWidget {
           )
         ],
       ),
-      'delete': stickers.menuPack == null ? Container() : Padding(
-        padding: const EdgeInsets.all(4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Are you sure?',
-              style: TextStyle(
-                color: theme.pmTextColor,
-                fontSize: 18,
-                fontWeight: FontWeight.w500
-              )
-            ),
-            const SizedBox(height: 6),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'Remove ',
-                    style: TextStyle(
-                      color: theme.pmTextColor
-                    )
-                  ),
-                  TextSpan(
-                    text: stickers.menuPack!.name,
-                    style: TextStyle(
-                      color: theme.pmTextColor,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
-                  TextSpan(
-                    text: ' sticker pack?',
-                    style: TextStyle(
-                      color: theme.pmTextColor
-                    )
+      'delete': stickers.menuPack == null ? Container() : Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Are you sure?',
+            style: TextStyle(
+              color: theme.pmTextColor,
+              fontSize: 18,
+              fontWeight: FontWeight.w500
+            )
+          ),
+          const SizedBox(height: 6),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Remove ',
+                  style: TextStyle(
+                    color: theme.pmTextColor
                   )
-                ]
-              ),
-            ),
-            const SizedBox(height: 4),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => stickers.packMenuDelete.value = !stickers.packMenuDelete.value,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Transform.scale(
-                      scale: 0.8,
-                      child: ValueListenableBuilder(
-                        valueListenable: stickers.packMenuDelete,
-                        builder: (context, delete, child) => Checkbox(
-                          splashRadius: 0,
-                          checkColor: theme.pmBackgroundColor,
-                          fillColor: MaterialStateColor.resolveWith((states) => theme.pmTextColor),
-                          value: delete,
-                          onChanged: (value) => stickers.packMenuDelete.value = value ?? delete,
-                        ),
-                      )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3.0),
-                      child: Text(
-                        'delete files',
-                        style: TextStyle(
-                          color: theme.pmTextColor
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
-              ),
+                TextSpan(
+                  text: stickers.menuPack!.name,
+                  style: TextStyle(
+                    color: theme.pmTextColor,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+                TextSpan(
+                  text: ' sticker pack?',
+                  style: TextStyle(
+                    color: theme.pmTextColor
+                  )
+                )
+              ]
             ),
-            const SizedBox(height: 6),
-            SizedBox(
-              height: 32,
-              child: Flex(
-                direction: Axis.horizontal,
+          ),
+          const SizedBox(height: 4),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => stickers.packMenuDelete.value = !stickers.packMenuDelete.value,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () => stickers.setPackMenuStatus('menu'),
-                          child: Hover(theme.hoverColor,
-                            child: Container(
-                              height: double.infinity,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: theme.pmBorderColor),
-                                borderRadius: BorderRadius.circular(8)
-                              ),
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: theme.pmTextColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                  Transform.scale(
+                    scale: 0.8,
+                    child: ValueListenableBuilder(
+                      valueListenable: stickers.packMenuDelete,
+                      builder: (context, delete, child) => Checkbox(
+                        splashRadius: 0,
+                        checkColor: theme.pmBackgroundColor,
+                        fillColor: MaterialStateColor.resolveWith((states) => theme.pmTextColor),
+                        value: delete,
+                        onChanged: (value) => stickers.packMenuDelete.value = value ?? delete,
+                      ),
+                    )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3.0),
+                    child: Text(
+                      'delete files',
+                      style: TextStyle(
+                        color: theme.pmTextColor
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: () => stickers.removePack(stickers.packMenuDelete.value),
-                          child: Hover(theme.hoverColor,
-                            child: Container(
-                              height: double.infinity,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: theme.pmBorderColor),
-                                borderRadius: BorderRadius.circular(8)
-                              ),
-                              child: Text(
-                                'Yes',
-                                style: TextStyle(
-                                  color: theme.errorColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
                 ],
               ),
-            )
-          ],
-        )
+            ),
+          ),
+          const SizedBox(height: 6),
+          SizedBox(
+            height: 32,
+            child: Flex(
+              direction: Axis.horizontal,
+              children: [
+                Expanded(
+                  child: PackMenuItem(
+                    text: 'Cancel',
+                    textColor: theme.pmTextColor,
+                    onTap: () => stickers.setPackMenuStatus('menu'),
+                  )
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: PackMenuItem(
+                    text: 'Yes',
+                    textColor: theme.errorColor,
+                    onTap: () => stickers.removePack(stickers.packMenuDelete.value),
+                  )
+                )
+              ],
+            ),
+          )
+        ],
       )
     };
 
@@ -219,7 +201,7 @@ class PackMenu extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {},
                     child: Padding(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(8),
                       child: statusMap[status]
                     ),
                   ),

@@ -6,11 +6,13 @@ import 'package:tgstickers/providers/theme_provider.dart';
 class FileInputBox extends StatefulWidget {
   final TextEditingController? controller;
   final String hint;
+  final bool isFile;
   final Function()? onFolderTap;
 
   const FileInputBox({
     Key? key,
     this.hint = '',
+    this.isFile = false,
     this.controller,
     this.onFolderTap,
   }) : super(key: key);
@@ -101,7 +103,8 @@ class _FileInputBoxState extends State<FileInputBox> {
                     child: Container(
                       decoration: BoxDecoration(border: Border(left: BorderSide(color: borderColor!, width: 0.0))),
                       child: Icon(
-                        FluentSystemIcons.ic_fluent_folder_open_regular,
+                        !widget.isFile ? FluentSystemIcons.ic_fluent_folder_open_regular 
+                        : FluentSystemIcons.ic_fluent_document_regular,
                         color: theme.inputTextColor,
                         size: 16,
                       ),
