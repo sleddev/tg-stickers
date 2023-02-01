@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:tgstickers/models/config_model.dart';
 import 'package:tgstickers/providers/config_provider.dart';
 
@@ -16,6 +17,7 @@ class StickerProvider extends ChangeNotifier {
   List<SmallSticker>? selectedPackWidgets;
 
   File? bigSticker;
+  String? bigStickerEmoji;
   ValueNotifier<bool> bigStickerVisible = ValueNotifier(false);
   Duration bigStickerTransition = const Duration(milliseconds: 65);
 
@@ -62,8 +64,20 @@ class StickerProvider extends ChangeNotifier {
     var fileList = imgPath.listSync();
     fileList.removeWhere((element) => element.path.contains('cover.png'));
 
+    var supportedTypes = ['.jpg', '.jpeg', '.jfif', '.png', '.webp', '.gif', '.bmp'];
+
     var stickerList = <SmallSticker>[];
     for (var element in fileList) {
+      if ((await element.stat()).type != FileSystemEntityType.file) continue;
+      if (!supportedTypes.contains(extension(element.path).toLowerCase())) continue; //{
+      //  try{
+      //    await ui.ImageDescriptor.encoded(await ui.ImmutableBuffer.fromUint8List(await File(element.path).readAsBytes()));
+      //  } catch (e) {
+      //    print(e);
+      //    continue;
+      //  }
+      //}
+
       stickerList.add(SmallSticker(imageFile: File(element.path)));
     }
 
@@ -71,13 +85,14 @@ class StickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setBigSticker(File? imageFile) {
+  void setBigSticker(File? imageFile, String? emoji) {
+    bigStickerEmoji = emoji;
     bigSticker = imageFile;
     notifyListeners();
   }
 
-  void showBigSticker(File imageFile) {
-    setBigSticker(imageFile);
+  void showBigSticker(File imageFile, String emoji) {
+    setBigSticker(imageFile, emoji);
     bigStickerVisible.value = true;
     notifyListeners();
   }

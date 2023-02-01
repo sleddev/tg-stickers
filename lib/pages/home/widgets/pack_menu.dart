@@ -22,7 +22,7 @@ class PackMenu extends StatelessWidget {
 
     Map<String, Widget> statusMap = {
       '': Container(),
-      'menu': Column(
+      'menu': stickers.menuPack == null ? Container() : Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
