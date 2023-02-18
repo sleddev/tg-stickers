@@ -2,18 +2,21 @@ import 'dart:io';
 
 class ConfigData {
   String token;
+  bool alwaysOnTop;
   List<StickerPackConfig> stickerPacks;
 
-  ConfigData(this.token, this.stickerPacks);
+  ConfigData(this.token, this.alwaysOnTop, this.stickerPacks);
 
   ConfigData.fromJson(Map<String, dynamic> json, Directory wd)
     : token = json['token'] ?? '',
+      alwaysOnTop = (json['always_on_top'] ?? 'true') != 'false',
       stickerPacks = List<StickerPackConfig>.generate(
         ((json['sticker_packs'] ?? []) as List<dynamic>).length,
         (index) => StickerPackConfig.fromJson(((json['sticker_packs'] ?? []) as List<dynamic>)[index], wd));
 
   Map<String, dynamic> toJson() => {
     'token': token,
+    'always_on_top': alwaysOnTop,
     'sticker_packs': List.generate(stickerPacks.length, (index) => stickerPacks[index].toJson())
   };
 }

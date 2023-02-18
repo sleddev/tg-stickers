@@ -1,9 +1,9 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tgstickers/utils.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../../../utils.dart';
 import '../../../providers/theme_provider.dart';
 import '../../../providers/window_provider.dart';
 
@@ -13,7 +13,7 @@ class TitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
-    final windows = Provider.of<WindowProvider>(context);
+    final window = Provider.of<WindowProvider>(context);
 
     return Flex(
       direction: Axis.horizontal,
@@ -25,7 +25,7 @@ class TitleBar extends StatelessWidget {
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () => windows.showAdd(),
+                onTap: () => window.showAdd(),
                 child: Hover(theme.hoverColor,
                   child: Icon(
                     FluentSystemIcons.ic_fluent_add_regular,
@@ -67,6 +67,7 @@ class TitleBar extends StatelessWidget {
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
+                      onTap: window.showSettings,
                       child: Hover(theme.hoverColor,
                         child: Icon(
                           FluentSystemIcons.ic_fluent_settings_regular,

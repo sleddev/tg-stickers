@@ -12,6 +12,7 @@ class DefaultTheme {
   final scrollBarColor = const Color(0xFF666666);
   final headerColor = const Color(0xFFbbbbbb);
   final blurColor = const Color(0x77000000);
+  final selectionColor = const Color(0xFF555555);
 
   //CopyToast
   final ctShadowColor = const Color(0x55333333);
@@ -38,4 +39,11 @@ class DefaultTheme {
   final pmBorderColor = const Color(0xFF666666);
   final pmTextColor = const Color(0xFFbbbbbb);
   final pmBackgroundColor = const Color(0xFF3a3a3a);
+
+  //Search box
+  final sbShadowColor = const Color(0x55333333);
+  final sbBorderColor = const Color(0xFF777777);
+  final sbTextColor = const Color(0xFFbbbbbb);
+  final sbBackgroundColor = const Color(0xFF3a3a3a);
+  final sbErrorOverlay = const Color(0x28ff0000);
 }

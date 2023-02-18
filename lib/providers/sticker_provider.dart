@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:tgstickers/models/config_model.dart';
-import 'package:tgstickers/providers/config_provider.dart';
 
+import 'config_provider.dart';
+import '../models/config_model.dart';
 import '../pages/home/widgets/small_sticker.dart';
 
 class StickerProvider extends ChangeNotifier {
@@ -14,7 +13,8 @@ class StickerProvider extends ChangeNotifier {
   final ConfigProvider configProvider;
 
   StickerPackConfig? selectedPack;
-  List<SmallSticker>? selectedPackWidgets;
+  List<MapEntry<String, SmallSticker>>? selectedPackWidgets;
+  List<MapEntry<String, SmallSticker>>? filteredWidgets;
 
   File? bigSticker;
   String? bigStickerEmoji;
@@ -52,7 +52,8 @@ class StickerProvider extends ChangeNotifier {
     if (index != null) selectedPack = stickerPacks[index];
     hidePackMenu();
 
-    loadCurrentPack();
+    await loadCurrentPack();
+    filteredWidgets = [];
     notifyListeners();
   }
 
@@ -61,27 +62,40 @@ class StickerProvider extends ChangeNotifier {
 
     var path = await configProvider.getPath();
     var imgPath = Directory(selectedPack!.basePath).isAbsolute ? Directory(selectedPack!.basePath) : Directory('$path${selectedPack!.basePath}');
+    if (!await imgPath.exists()) {
+      selectedPackWidgets = [];
+      return;
+    }
     var fileList = imgPath.listSync();
     fileList.removeWhere((element) => element.path.contains('cover.png'));
 
     var supportedTypes = ['.jpg', '.jpeg', '.jfif', '.png', '.webp', '.gif', '.bmp'];
 
-    var stickerList = <SmallSticker>[];
+    var entryList = <MapEntry<String, SmallSticker>>[];
     for (var element in fileList) {
       if ((await element.stat()).type != FileSystemEntityType.file) continue;
       if (!supportedTypes.contains(extension(element.path).toLowerCase())) continue; //{
-      //  try{
-      //    await ui.ImageDescriptor.encoded(await ui.ImmutableBuffer.fromUint8List(await File(element.path).readAsBytes()));
-      //  } catch (e) {
-      //    print(e);
-      //    continue;
-      //  }
-      //}
 
-      stickerList.add(SmallSticker(imageFile: File(element.path)));
+      String keywords = basename(element.path).split('-').last.replaceAll('_', ' ');
+      String emoji = '';
+      try {
+        emoji = basename(element.path).split('-').first.characters.last;
+      } catch (e) {
+        emoji = '';
+      }
+      entryList.add(MapEntry(emoji + keywords, SmallSticker(imageFile: File(element.path), emoji: emoji)));
     }
 
-    selectedPackWidgets = stickerList;
+    selectedPackWidgets = entryList;
+    notifyListeners();
+  }
+
+  Future<void> filterCurrentPack(String query) async {
+    if (query.isEmpty) filteredWidgets = selectedPackWidgets;
+    filteredWidgets = selectedPackWidgets?.where((element) {
+      if (element.key.toLowerCase().contains(query.toLowerCase())) return true;
+      return false;
+    }).toList();
     notifyListeners();
   }
 

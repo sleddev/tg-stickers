@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tgstickers/pages/home/home.dart';
-import 'package:tgstickers/providers/add_provider.dart';
-import 'package:tgstickers/providers/clipboard_provider.dart';
-import 'package:tgstickers/providers/config_provider.dart';
-import 'package:tgstickers/providers/sticker_provider.dart';
-import 'package:tgstickers/providers/theme_provider.dart';
-import 'package:tgstickers/providers/toast_provider.dart';
-import 'package:tgstickers/providers/window_provider.dart';
+import 'pages/home/home.dart';
+import 'pages/settings/settings.dart';
 
+import 'providers/add_provider.dart';
+import 'providers/clipboard_provider.dart';
+import 'providers/config_provider.dart';
+import 'providers/settings_provider.dart';
+import 'providers/sticker_provider.dart';
+import 'providers/theme_provider.dart';
+import 'providers/toast_provider.dart';
+import 'providers/window_provider.dart';
 import 'providers/download_provider.dart';
 
 //TODO: stickerpack update checker
 //TODO: stickerpack folder not found message
-//TODO: settings coming soon screen
 //TODO: edit option in PackMenu
 
 class App extends StatelessWidget {
   final StickerProvider stickers;
   final ConfigProvider configProvider;
+  
 
   const App({required this.configProvider, required this.stickers, super.key});
 
@@ -36,20 +38,32 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<ToastProvider>(create: (_) => toastProvider),
         ChangeNotifierProvider<AddProvider>(create: (_) => AddProvider()),
         ChangeNotifierProvider<DownloadProvider>(create: (_) => DownloadProvider(config: configProvider, stickers: stickers)),
-        Provider<WindowProvider>(create: (_) => WindowProvider(stickers: stickers)),
+        ChangeNotifierProvider<WindowProvider>(create: (_) => WindowProvider(stickers: stickers)),
+        ChangeNotifierProvider(create: (_) => SettingsProvider(configProvider)),
         Provider<ClipboardProvider>(create: (_) => clipboardProvider),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'TG Stickers',
-        theme: ThemeData(
-          primarySwatch: Colors.blue
-        ),
-        home: const Scaffold(
-          backgroundColor: Color(0xFF333333),
-          body: HomePage(),
-        ),
-      ),
+      builder: (context, child) {
+        final window = Provider.of<WindowProvider>(context);
+        final theme = Provider.of<ThemeProvider>(context);
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'TG Stickers',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textSelectionTheme: TextSelectionThemeData(
+              selectionColor: theme.selectionColor
+            )
+          ),
+          home: Scaffold(
+            backgroundColor: const Color(0xFF333333),
+            body: ValueListenableBuilder(
+              valueListenable: window.settingsOpen,
+              builder: (context, value, child) => value ? const SettingsPage() : const HomePage(),
+            ),
+          ),
+        );
+      }
     );
   }
 }

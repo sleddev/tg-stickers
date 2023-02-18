@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tgstickers/app.dart';
-import 'package:tgstickers/providers/config_provider.dart';
-import 'package:tgstickers/providers/sticker_provider.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'app.dart';
+import 'providers/config_provider.dart';
+import 'providers/sticker_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,5 +34,7 @@ class Startup {
   Future<void> start() async {
     configProvider = ConfigProvider();
     stickers = StickerProvider(configProvider);
+
+    await windowManager.setAlwaysOnTop((await configProvider.getConfig()).alwaysOnTop);
   }
 }

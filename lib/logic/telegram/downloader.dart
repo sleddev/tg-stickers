@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dart_emoji/dart_emoji.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,6 +9,7 @@ import 'package:tgstickers/logic/telegram/telegram_api.dart';
 class Downloader {
   final TelegramAPI api;
   final bool speedy; //freezy!
+  final EmojiParser emojiParser = EmojiParser();
 
   Downloader({required this.api, this.speedy = false});
 
@@ -63,7 +65,7 @@ class Downloader {
 
     List<Map<String, dynamic>> files = pack['files'];
     files.asMap().forEach((i, sticker) async {
-      await downloadSticker(sticker['link'], '${saveDir.path}/webp/${(i + 1).toString().padLeft(4, "0")}-${sticker["emoji"]}.${sticker["file_type"]}');
+      await downloadSticker(sticker['link'], '${saveDir.path}/webp/${(i + 1).toString().padLeft(4, "0")}${sticker["emoji"]}-${emojiParser.getEmoji(sticker["emoji"]).name.replaceAll('-', '_')}.${sticker["file_type"]}');
     });
   }
 

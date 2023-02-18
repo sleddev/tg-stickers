@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tgstickers/providers/sticker_provider.dart';
-import 'package:tgstickers/providers/theme_provider.dart';
 
+import '../../../providers/sticker_provider.dart';
+import '../../../providers/theme_provider.dart';
 import '../../../utils.dart';
 
 class LeftPanel extends StatelessWidget {
@@ -35,12 +35,13 @@ class LeftPanel extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(4),
                         child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: () => stickers.changePack(index: index),
                           onSecondaryTap: () => stickers.showPackMenu(index),
-                          child: Image.file(
+                          child: stickers.stickerPacks[index].coverFile.existsSync() ? Image.file(
                             stickers.stickerPacks[index].coverFile,
                             filterQuality: FilterQuality.medium,
-                          )
+                          ) : const Center(child: Text('❔'))
                         ),
                       ),
                     ),

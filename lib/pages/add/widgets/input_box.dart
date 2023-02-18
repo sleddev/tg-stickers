@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tgstickers/providers/theme_provider.dart';
+
+import '../../../providers/theme_provider.dart';
 
 class InputBox extends StatefulWidget {
   final TextEditingController? controller;
@@ -61,6 +62,7 @@ class _InputBoxState extends State<InputBox> {
           ),
           height: 32,
           child: TextField(
+            autofocus: true,
             focusNode: focusNode,
             controller: controller,
             maxLines: 1,

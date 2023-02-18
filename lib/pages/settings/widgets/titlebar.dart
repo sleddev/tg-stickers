@@ -7,8 +7,8 @@ import '../../../utils.dart';
 import '../../../providers/theme_provider.dart';
 import '../../../providers/window_provider.dart';
 
-class AddTitleBar extends StatelessWidget {
-  const AddTitleBar({super.key});
+class SettingsTitleBar extends StatelessWidget {
+  const SettingsTitleBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class AddTitleBar extends StatelessWidget {
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () => window.hideAdd(),
+                onTap: () => window.hideSettings(),
                 child: Hover(theme.hoverColor,
                   child: Icon(
                     FluentSystemIcons.ic_fluent_arrow_left_regular,
@@ -37,7 +37,7 @@ class AddTitleBar extends StatelessWidget {
             ),
           )
         ),
-        Expanded(flex: 6, child: 
+        Expanded(flex: 9, child: 
           Container(
             color: theme.rightBg,
             child: Flex(
@@ -47,37 +47,17 @@ class AddTitleBar extends StatelessWidget {
                   cursor: SystemMouseCursors.grab,
                   child: DragToMoveArea(child: Align(
                     alignment: Alignment.center,
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 32),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: Container(
-                          width: 32,
-                          height: 3,
-                          color: theme.dragBarColor
-                        ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: Container(
+                        width: 32,
+                        height: 3,
+                        color: theme.dragBarColor
                       ),
                     ),
                   ),
                   ),
                 )),
-                SizedBox(
-                  width: 46,
-                  height: double.infinity,
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: window.showSettings,
-                      child: Hover(theme.hoverColor,
-                        child: Icon(
-                          FluentSystemIcons.ic_fluent_settings_regular,
-                          color: theme.iconColor,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                  ), //Settings button
-                ),
                 SizedBox(
                   width: 46,
                   child: MouseRegion(

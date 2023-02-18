@@ -1,30 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-import 'package:tgstickers/providers/clipboard_provider.dart';
 
+import '../../../providers/clipboard_provider.dart';
 import '../../../providers/sticker_provider.dart';
 
 class SmallSticker extends StatelessWidget {
   final File imageFile;
+  final String emoji;
 
-  const SmallSticker({required this.imageFile, super.key});
+  const SmallSticker({required this.imageFile, required this.emoji, super.key});
 
   @override
   Widget build(BuildContext context) {
     final clipboard = Provider.of<ClipboardProvider>(context);
     final stickers = Provider.of<StickerProvider>(context);
 
-    String emoji;
+    ImageProvider image;
     try {
-      emoji = basename(imageFile.path).split('-').last.split('.')[0];
+      image = ResizeImage(FileImage(imageFile), width: 128, allowUpscaling: true);
     } catch (e) {
-      emoji = '';
+      image = FileImage(imageFile);
     }
-
-    ImageProvider image = ResizeImage(FileImage(imageFile), width: 128, allowUpscaling: true);
 
     return GestureDetector(
       onTap: () async {
@@ -33,7 +31,11 @@ class SmallSticker extends StatelessWidget {
       onSecondaryTap: () {
         stickers.showBigSticker(imageFile, emoji);
       },
-      child: Image(image: image, isAntiAlias: true, filterQuality: FilterQuality.medium,),
+      child: Image(image: image, isAntiAlias: true, filterQuality: FilterQuality.medium,
+        errorBuilder: (context, error, stackTrace) {
+          image = FileImage(imageFile);
+          return Image(image: image, isAntiAlias: true, filterQuality: FilterQuality.medium);
+        }),
     );
   }
 }

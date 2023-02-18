@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
-
   //Main
   var leftBg = const Color(0xFF3a3a3a);
   var rightBg = const Color(0xFF333333);
@@ -13,6 +12,7 @@ class ThemeProvider extends ChangeNotifier {
   var scrollBarColor = const Color(0xFF666666);
   var headerColor = const Color(0xFFbbbbbb);
   var blurColor = const Color(0x77000000);
+  var selectionColor = const Color(0xFF555555);
 
   //CopyToast
   var ctShadowColor = const Color(0x55333333);
@@ -39,4 +39,11 @@ class ThemeProvider extends ChangeNotifier {
   var pmBorderColor = const Color(0xFF666666);
   var pmTextColor = const Color(0xFFbbbbbb);
   var pmBackgroundColor = const Color(0xFF3a3a3a);
+
+  //Search box
+  var sbShadowColor = const Color(0x55333333);
+  var sbBorderColor = const Color(0xFF777777);
+  var sbTextColor = const Color(0xFFbbbbbb);
+  var sbBackgroundColor = const Color(0xFF3a3a3a);
+  var sbErrorOverlay = const Color(0x28ff0000);
 }
