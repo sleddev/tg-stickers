@@ -37,7 +37,7 @@ class SettingsTitleBar extends StatelessWidget {
             ),
           )
         ),
-        Expanded(flex: 9, child: 
+        Expanded(flex: 6, child: 
           Container(
             color: theme.rightBg,
             child: Flex(
@@ -47,13 +47,19 @@ class SettingsTitleBar extends StatelessWidget {
                   cursor: SystemMouseCursors.grab,
                   child: DragToMoveArea(child: Align(
                     alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: Container(
-                        width: 32,
-                        height: 3,
-                        color: theme.dragBarColor
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(2),
+                          child: Container(
+                            width: 32,
+                            height: 3,
+                            color: theme.dragBarColor
+                          ),
+                        ),
+                        const SizedBox(width: 14,)
+                      ],
                     ),
                   ),
                   ),

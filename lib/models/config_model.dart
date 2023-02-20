@@ -9,7 +9,7 @@ class ConfigData {
 
   ConfigData.fromJson(Map<String, dynamic> json, Directory wd)
     : token = json['token'] ?? '',
-      alwaysOnTop = (json['always_on_top'] ?? 'true') != 'false',
+      alwaysOnTop = json['always_on_top'] is bool ? json['always_on_top'] ?? true : true,
       stickerPacks = List<StickerPackConfig>.generate(
         ((json['sticker_packs'] ?? []) as List<dynamic>).length,
         (index) => StickerPackConfig.fromJson(((json['sticker_packs'] ?? []) as List<dynamic>)[index], wd));

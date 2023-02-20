@@ -29,20 +29,10 @@ class WindowProvider extends ChangeNotifier {
   }
 
   void showSettings() async {
-    lastPos = await windowManager.getPosition();
-    await windowManager.hide();
     settingsOpen.value = true;
-    await windowManager.setSize(const Size(640, 480));
-    await windowManager.setAlignment(Alignment.center);
-    await windowManager.show();
   }
 
   void hideSettings() async {
-    await windowManager.hide();
     settingsOpen.value = false;
-    await windowManager.setSize(const Size(440, 380));
-    await windowManager.setAlignment(Alignment.topLeft);
-    if (lastPos != null) await windowManager.setPosition(lastPos!);
-    await windowManager.show();
   }
 }

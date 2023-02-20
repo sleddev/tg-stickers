@@ -16,7 +16,20 @@ class ConfigProvider extends ChangeNotifier {
     String path = await getPath();
 
     File configFile = File('$path/config.json');
-    String configString = await configFile.readAsString();
+    String configString;
+    try {
+      configString = await configFile.readAsString();
+
+    } on FileSystemException {
+      configString = """
+{
+  "token": "",
+  "always_on_top": true,
+  "sticker_packs": []
+}
+""";
+    }
+
     Map<String, dynamic> configJson = jsonDecode(configString.isEmpty ? '{}' : configString);
     ConfigData config = ConfigData.fromJson(configJson, Directory(path));
 

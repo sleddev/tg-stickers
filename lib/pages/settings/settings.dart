@@ -58,7 +58,7 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 9,
+                  flex: 6,
                   child: Container(
                     color: theme.rightBg,
                     child: settings.tabWidget ?? Container(),

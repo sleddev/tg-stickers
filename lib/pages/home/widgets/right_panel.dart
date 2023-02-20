@@ -31,6 +31,8 @@ class _RightPanelState extends State<RightPanel> {
     final stickers = Provider.of<StickerProvider>(context);
     final toast = Provider.of<ToastProvider>(context);
 
+    if (stickers.stickerPacks.isEmpty) return const AddReminder();
+
     var scrollController = AdjustableScrollController(20);
 
     if (stickers.selectedPack == null || stickers.selectedPackWidgets == null) return Container();
@@ -44,9 +46,7 @@ class _RightPanelState extends State<RightPanel> {
 
     var searchColor = noResult ? Color.alphaBlend(theme.sbErrorOverlay, theme.sbBackgroundColor) : theme.sbBackgroundColor;
 
-    return stickers.stickerPacks.isEmpty ?
-    const AddReminder() :
-    Stack(
+    return Stack(
       children: [
         stickers.selectedPackWidgets!.isEmpty ? Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
