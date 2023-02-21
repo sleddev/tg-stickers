@@ -56,6 +56,28 @@ class StickerProvider extends ChangeNotifier {
     filteredWidgets = [];
     notifyListeners();
   }
+  Future<void> changePackUp() async {
+    try {
+      var i = stickerPacks.indexOf(selectedPack!);
+      if (i != 0 && stickerPacks.length > 1) changePack(index: i - 1);
+    } catch (e) {
+      return;
+    }
+  }
+  Future<void> changePackDown() async {
+    try {
+      var i = stickerPacks.indexOf(selectedPack!);
+      if (i != stickerPacks.length - 1 && stickerPacks.length > 1) changePack(index: i + 1);
+    } catch (e) {
+      return;
+    }
+  }
+  Future<void> changePackFirst() async {
+    if (stickerPacks.isNotEmpty) changePack(index: 0);
+  }
+  Future<void> changePackLast() async {
+    if (stickerPacks.isNotEmpty) changePack(index: stickerPacks.length - 1);
+  }
 
   Future<void> loadCurrentPack() async {
     if (selectedPack == null) return;

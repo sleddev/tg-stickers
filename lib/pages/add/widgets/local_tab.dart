@@ -27,6 +27,9 @@ class LocalTab extends StatelessWidget {
     final coverController = TextEditingController();
     final nameController = TextEditingController();
     final titleController = TextEditingController();
+    final titleFocus = FocusNode();
+
+    titleFocus.requestFocus();
 
     Map<String, Widget> statusWidgets = {
       '': Container(),
@@ -73,7 +76,7 @@ class LocalTab extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4),
-            child: InputBox(controller: titleController, hint: 'Hioshi The Enfield',),
+            child: InputBox(controller: titleController, hint: 'Hioshi The Enfield', focusNode: titleFocus,),
           ),
           SizedBox(
             height: 18,

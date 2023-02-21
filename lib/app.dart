@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tgstickers/providers/keyboard_provider.dart';
 
 import 'pages/home/home.dart';
 import 'pages/settings/settings.dart';
@@ -41,6 +42,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<WindowProvider>(create: (_) => WindowProvider(stickers: stickers)),
         ChangeNotifierProvider(create: (_) => SettingsProvider(configProvider)),
         Provider<ClipboardProvider>(create: (_) => clipboardProvider),
+        Provider<KeyboardProvider>(create: (_) => KeyboardProvider(stickers: stickers, clipboard: clipboardProvider)),
       ],
       builder: (context, child) {
         final window = Provider.of<WindowProvider>(context);

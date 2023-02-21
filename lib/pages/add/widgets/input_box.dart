@@ -5,12 +5,16 @@ import '../../../providers/theme_provider.dart';
 
 class InputBox extends StatefulWidget {
   final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final bool? autofocus;
   final String hint;
 
   const InputBox({
     Key? key,
     this.hint = '',
     this.controller,
+    this.focusNode,
+    this.autofocus
   }) : super(key: key);
 
   @override
@@ -22,10 +26,13 @@ class _InputBoxState extends State<InputBox> {
   FocusNode focusNode = FocusNode();
   Color? borderColor;
   bool hovered = false;
+  bool autofocus = false;
 
   @override
   void initState() {
     controller = widget.controller ?? TextEditingController();
+    focusNode = widget.focusNode ?? FocusNode();
+    autofocus = widget.autofocus ?? false;
     super.initState();
   }
 
@@ -62,7 +69,7 @@ class _InputBoxState extends State<InputBox> {
           ),
           height: 32,
           child: TextField(
-            autofocus: true,
+            autofocus: autofocus,
             focusNode: focusNode,
             controller: controller,
             maxLines: 1,

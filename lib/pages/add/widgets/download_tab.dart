@@ -18,6 +18,8 @@ class DownloadTab extends StatelessWidget {
 
     final linkController = TextEditingController();
     final tokenController = TextEditingController();
+    final linkFocus = FocusNode();
+    linkFocus.requestFocus();
     
     Future<void> getToken() async {
       tokenController.text = (await config.getConfig()).token;
@@ -71,7 +73,7 @@ class DownloadTab extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4),
-            child: InputBox(controller: linkController, hint: 'https://t.me/addstickers/hiostickerpack',),
+            child: InputBox(controller: linkController, hint: 'https://t.me/addstickers/hiostickerpack', focusNode: linkFocus, autofocus: true),
           ),
           SizedBox(
             height: 18,

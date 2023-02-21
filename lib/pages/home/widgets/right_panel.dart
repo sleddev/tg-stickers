@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../../../providers/keyboard_provider.dart';
 import 'add_hint.dart';
 import 'big_sticker.dart';
 import 'pack_menu.dart';
@@ -23,6 +24,7 @@ class _RightPanelState extends State<RightPanel> {
   String query = '';
   var searchController = TextEditingController(text: '');
   var searchFocus = FocusNode();
+  var textFieldFocus = FocusNode();
   var noResult = false;
 
   @override
@@ -135,7 +137,7 @@ class _RightPanelState extends State<RightPanel> {
             ),
           ),
         ),
-        Align(
+        Align( //Search bar
           alignment: Alignment.bottomCenter,
           child: Container(
             height: 48,
@@ -157,28 +159,34 @@ class _RightPanelState extends State<RightPanel> {
                       Icon(FluentSystemIcons.ic_fluent_search_regular, color: theme.sbTextColor, size: 16),
                       const SizedBox(width: 4),
                       Expanded(
-                        child: TextField(
+                        child: Focus(
                           focusNode: searchFocus,
-                          autofocus: true,
-                          controller: searchController,
-                          onChanged: (value) {
-                            query = value;
-                            stickers.filterCurrentPack(value);
-                            if (mounted) setState(() => noResult = (stickers.filteredWidgets ?? []).isEmpty);
+                          onFocusChange: (value) {
+                            if (value) textFieldFocus.requestFocus();
                           },
-                          maxLines: 1,
-                          cursorColor: theme.inputTextColor,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: InputBorder.none,
-                            hintText: 'Search in current pack...',
-                            hintStyle: TextStyle(
-                              color: theme.inputHintColor
-                            )
-                          ),
-                          style: TextStyle(
-                            color: theme.sbTextColor,
-                            fontSize: 16,
+                          child: TextField(
+                            focusNode: textFieldFocus,
+                            autofocus: true,
+                            controller: searchController,
+                            onChanged: (value) {
+                              query = value;
+                              stickers.filterCurrentPack(value);
+                              if (mounted) setState(() => noResult = (stickers.filteredWidgets ?? []).isEmpty);
+                            },
+                            maxLines: 1,
+                            cursorColor: theme.inputTextColor,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              border: InputBorder.none,
+                              hintText: 'Search in current pack...',
+                              hintStyle: TextStyle(
+                                color: theme.inputHintColor
+                              )
+                            ),
+                            style: TextStyle(
+                              color: theme.sbTextColor,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
