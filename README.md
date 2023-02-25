@@ -15,9 +15,9 @@ Extract the [latest release](https://github.com/CroatianHusky/tg-stickers/releas
 
 After first launch, click the add button to add your first sticker pack.
 
-To add a local sticker pack, enter a title (will be displayed on the main page), a name (the last segment of the sticker pack link, for example: `hiostickerpack` for `https://t.me/addstickers/hiostickerpack`), locate the sticker pack folder (make sure it only contains images), and choose a cover photo.
+To add a local sticker pack, enter a title (will be displayed on the main page), a name (the last segment of the sticker pack link, for example: `hiostickerpack` for `https://t.me/addstickers/hiostickerpack`), locate the sticker pack folder, and choose a cover photo.
 
-To download a sticker pack from Telegram, enter the link or name of the pack, and your Telegram bot token.
+To download a sticker pack from Telegram, enter the link or name of the pack and your Telegram bot token.
 
 Getting a bot token:
 1) Find [@BotFather](https://t.me/BotFather) on Telegram
@@ -32,11 +32,17 @@ Click a sticker pack to select it, and then click on a sticker to copy it.
 
 Right click on a sticker to bring up a bigger preview, then either click on the sticker to copy, or right click again to hide the preview.
 
+Right click on a sticker pack logo to open a Pack Menu, where you can reorder or delete the packs.
+
+Press `Windows` + `-` to open the application if the background service is running (started automatically when you launch the app, and can be closed from the system tray icon. The background service consumes around 1MB or memory, and should have no impact on performance).
+
+You can change between sticker packs using the `PageUp`, `PageDown`, `Home`, and `End` buttons
+
 ### Building from source
 Prerequisites:
 - [Flutter](https://docs.flutter.dev/get-started/install)
 - [Rust](https://www.rust-lang.org/tools/install)
-- (on Windows) [MinGW]()
+- (on Windows) [MinGW](https://osdn.net/projects/mingw/)
 
 Steps:
 1) clone the repo using `git clone https://github.com/CroatianHusky/tg-stickers.git`
