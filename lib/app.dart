@@ -18,6 +18,9 @@ import 'providers/download_provider.dart';
 //TODO: stickerpack update checker
 //TODO: stickerpack folder not found message
 //TODO: edit option in PackMenu
+//TODO: retain focus after enter in search
+//TODO: implement compatibility modes
+//TODO: custom hotkey in tray process
 
 class App extends StatelessWidget {
   final StickerProvider stickers;

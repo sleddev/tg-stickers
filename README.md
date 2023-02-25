@@ -1,6 +1,6 @@
 ## TG Stickers Everywhere
 
-Use Telegram stickers in other applications (for example Discord).
+Use Telegram stickers in other applications (for example Discord, Messenger, Twitter DMs, Instagram DMs).
 
 ![WIP Screenshot](https://i.imgur.com/99B0axW.png)
 
@@ -36,11 +36,18 @@ Right click on a sticker to bring up a bigger preview, then either click on the 
 Prerequisites:
 - [Flutter](https://docs.flutter.dev/get-started/install)
 - [Rust](https://www.rust-lang.org/tools/install)
+- (on Windows) [MinGW]()
 
 Steps:
 1) clone the repo using `git clone https://github.com/CroatianHusky/tg-stickers.git`
 2) Run `flutter pub get`
-3) Run `flutter build windows` or `flutter build linux`
+
+#### Windows
+3) Command Prompt: `flutter build windows && .\tray_windows.bat` <br/> 
+or PowerShell: `flutter build windows | .\tray_windows.bat`
+
+#### Linux
+3) Run `flutter build linux`
 
 
 <hr/>

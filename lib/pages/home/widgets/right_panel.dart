@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../../providers/keyboard_provider.dart';
 import 'add_hint.dart';
 import 'big_sticker.dart';
 import 'pack_menu.dart';

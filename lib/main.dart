@@ -36,5 +36,11 @@ class Startup {
     stickers = StickerProvider(configProvider);
 
     await windowManager.setAlwaysOnTop((await configProvider.getConfig()).alwaysOnTop);
+
+    startTray();
+  }
+
+  Future<void> startTray() async {
+    var process = await Process.start('tgs-tray.exe', []);
   }
 }
