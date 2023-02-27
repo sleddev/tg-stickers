@@ -1,3 +1,4 @@
+taskkill /f /fi "windowtitle eq TGStickers tray"
 mkdir tray\windows\temp
 mkdir build\windows\runner\Debug
 mkdir build\windows\runner\Release

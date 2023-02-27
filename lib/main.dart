@@ -40,7 +40,12 @@ class Startup {
     startTray();
   }
 
-  Future<void> startTray() async {
-    var process = await Process.start('tgs-tray.exe', []);
+  Future<bool> startTray() async {
+    try {
+      await Process.start('tgs-tray.exe', []);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

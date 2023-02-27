@@ -42,7 +42,7 @@ You can change between sticker packs using the `PageUp`, `PageDown`, `Home`, and
 Prerequisites:
 - [Flutter](https://docs.flutter.dev/get-started/install)
 - [Rust](https://www.rust-lang.org/tools/install)
-- (on Windows) [MinGW](https://osdn.net/projects/mingw/)
+- (on Windows) [MinGW-w64](https://github.com/skeeto/w64devkit)
 
 Steps:
 1) clone the repo using `git clone https://github.com/CroatianHusky/tg-stickers.git`

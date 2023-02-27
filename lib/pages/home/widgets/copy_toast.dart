@@ -21,7 +21,7 @@ class CopyToast extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: theme.ctBackgroundColor,
-                border: Border.all(color: theme.ctBorderColor, strokeAlign: StrokeAlign.center),
+                border: Border.all(color: theme.ctBorderColor),
                 borderRadius: BorderRadius.circular(8)
               ),
               height: 30,
