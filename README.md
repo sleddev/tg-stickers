@@ -4,8 +4,8 @@ Use Telegram stickers in other applications (for example Discord, Messenger, Twi
 
 ![WIP Screenshot](https://i.imgur.com/99B0axW.png)
 
-*The project is WIP, and provided as is. 
-I'm developing on Windows, so it's only actively tested on Windows. Might or might not work great on linux, never tested on masOS*
+*This project is WIP, and provided as is. 
+I'm developing on Windows, so it's only actively tested on Windows. Might or might not work well on linux. Never tested on masOS (maybe works, probably not)*
 
 ### Installing
 Extract the [latest release](https://github.com/CroatianHusky/tg-stickers/releases/latest) zip, and run `tgstickers.exe`. You can create a shortcut for easy access.
@@ -34,7 +34,7 @@ Right click on a sticker to bring up a bigger preview, then either click on the 
 
 Right click on a sticker pack logo to open a Pack Menu, where you can reorder or delete the packs.
 
-Press `Windows` + `-` to open the application if the background service is running (started automatically when you launch the app, and can be closed from the system tray icon. The background service consumes around 1MB or memory, and should have no impact on performance).
+Press `Windows` + `-` to open the application if the background service is running (started automatically when you launch the app, and can be closed from system tray icons. The background service consumes around 1MB or memory, and should have no impact on performance).
 
 You can change between sticker packs using the `PageUp`, `PageDown`, `Home`, and `End` buttons
 
@@ -58,4 +58,4 @@ or PowerShell: `flutter build windows | .\tray_windows.bat`
 
 <hr/>
 
-Please note: this code is my first Flutter project, and it is in no way an example of the Flutter best practices.
+Please note: this is my first Flutter project, and it is in no way an example of the Flutter best practices.
