@@ -41,8 +41,8 @@ class SettingsPage extends StatelessWidget {
                   flex: 1,
                   child: Container(
                     color: theme.leftBg,
-                    child: Column(
-                      children: const [
+                    child: const Column(
+                      children: [
                         SettingsTab(
                           name: "general",
                           tab: GeneralTab(),

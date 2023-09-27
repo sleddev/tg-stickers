@@ -37,8 +37,8 @@ class AddPage extends StatelessWidget {
                     flex: 1,
                     child: Container(
                       color: theme.leftBg,
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           AddTab(
                             icon: FluentSystemIcons.ic_fluent_arrow_download_regular,
                             name: 'download',

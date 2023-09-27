@@ -34,12 +34,12 @@ class HomePage extends StatelessWidget {
             top: BorderSide(color: theme.borderColor, width: 1),
           )
         ),
-        child: Stack(
+        child: const Stack(
           children: [
             Flex(
               direction: Axis.vertical,
               children: [
-                const SizedBox( //Titlebar
+                SizedBox( //Titlebar
                   height: 32,
                   width: double.infinity,
                   child: TitleBar(),
@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
                 Expanded( //Main window
                   child: Flex(
                     direction: Axis.horizontal,
-                    children: const [
+                    children: [
                       Expanded(flex: 1, child: LeftPanel()),
                       Expanded(flex: 6, child: RightPanel())
                     ],
@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
                 )
               ],
             ),
-            const AddPage()
+            AddPage()
           ],
         ),
       ),
