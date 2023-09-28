@@ -8,7 +8,7 @@ Use Telegram stickers in other applications (for example Discord, Messenger, Twi
 I'm developing on Windows, so it's only actively tested on Windows. Might or might not work well on linux. Never tested on masOS (maybe works, probably not)*
 
 ### Installing
-Extract the [latest release](https://github.com/CroatianHusky/tg-stickers/releases/latest) zip, and run `tgstickers.exe`. You can create a shortcut for easy access.
+Extract the [latest release](https://github.com/sleddev/tg-stickers/releases/latest) zip, and run `tgstickers.exe`. You can create a shortcut for easy access.
 
 ### Getting started
 ![add button screenshot](https://i.imgur.com/Zj6PifX.png)
@@ -45,7 +45,7 @@ Prerequisites:
 - (on Windows) [MinGW-w64](https://github.com/skeeto/w64devkit)
 
 Steps:
-1) clone the repo using `git clone https://github.com/CroatianHusky/tg-stickers.git`
+1) clone the repo using `git clone https://github.com/sleddev/tg-stickers.git`
 2) Run `flutter pub get`
 
 #### Windows
