@@ -16,7 +16,8 @@ void main() async {
     await windowManager.setAlwaysOnTop(true);
     await windowManager.setTitle('TG Stickers');
     await windowManager.setSize(const Size(440, 380));
-    await windowManager.setResizable(false);
+    await windowManager.setMinimumSize(const Size(440, 380));
+    await windowManager.setMaximumSize(const Size(440, 3840));
     if (Platform.isWindows) await windowManager.setHasShadow(true);
     windowManager.show();
   });
@@ -24,7 +25,10 @@ void main() async {
   Startup startup = Startup();
   await startup.start();
 
-  runApp(App(stickers: startup.stickers, configProvider: startup.configProvider, ));
+  runApp(App(
+    stickers: startup.stickers,
+    configProvider: startup.configProvider,
+  ));
 }
 
 class Startup {
@@ -35,7 +39,8 @@ class Startup {
     configProvider = ConfigProvider();
     stickers = StickerProvider(configProvider);
 
-    await windowManager.setAlwaysOnTop((await configProvider.getConfig()).alwaysOnTop);
+    await windowManager
+        .setAlwaysOnTop((await configProvider.getConfig()).alwaysOnTop);
 
     startTray();
   }

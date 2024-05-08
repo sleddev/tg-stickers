@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tgstickers/pages/add/add.dart';
 import 'package:tgstickers/pages/home/widgets/left_panel.dart';
 import 'package:tgstickers/pages/home/widgets/right_panel.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../providers/keyboard_provider.dart';
 import '../../providers/theme_provider.dart';
@@ -25,38 +26,41 @@ class HomePage extends StatelessWidget {
       onFocusChange: (value) {
         if (!value && !window.addOpen.value) kb.scope.requestFocus();
       },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
+      child: DragToResizeArea(
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border(
             bottom: BorderSide(color: theme.borderColor, width: 2),
             left: BorderSide(color: theme.borderColor, width: 1),
             right: BorderSide(color: theme.borderColor, width: 1),
             top: BorderSide(color: theme.borderColor, width: 1),
-          )
-        ),
-        child: const Stack(
-          children: [
-            Flex(
-              direction: Axis.vertical,
-              children: [
-                SizedBox( //Titlebar
-                  height: 32,
-                  width: double.infinity,
-                  child: TitleBar(),
-                ),
-                Expanded( //Main window
-                  child: Flex(
-                    direction: Axis.horizontal,
-                    children: [
-                      Expanded(flex: 1, child: LeftPanel()),
-                      Expanded(flex: 6, child: RightPanel())
-                    ],
+          )),
+          child: const Stack(
+            children: [
+              Flex(
+                direction: Axis.vertical,
+                children: [
+                  SizedBox(
+                    //Titlebar
+                    height: 32,
+                    width: double.infinity,
+                    child: TitleBar(),
                   ),
-                )
-              ],
-            ),
-            AddPage()
-          ],
+                  Expanded(
+                    //Main window
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Expanded(flex: 1, child: LeftPanel()),
+                        Expanded(flex: 6, child: RightPanel())
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              AddPage()
+            ],
+          ),
         ),
       ),
     );
