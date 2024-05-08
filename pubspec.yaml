@@ -6,29 +6,29 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.1.0+1
 
 environment:
-  sdk: '>=2.18.4 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
   provider: ^6.0.5
-  window_manager: ^0.2.9
+  window_manager: ^0.3.8
   path_provider: ^2.0.11
   fluentui_icons: ^1.0.0
-  super_clipboard: ^0.1.7+4
+  super_clipboard: ^0.8.12
   blur: ^3.1.0
   path: ^1.8.2
-  http: ^0.13.5
-  image: ^4.0.10
-  file_picker: ^5.2.5
+  http: ^1.2.1
+  image: ^4.1.7
+  file_picker: ^8.0.3
   dart_emoji: ^0.2.0+2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: any
 
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
