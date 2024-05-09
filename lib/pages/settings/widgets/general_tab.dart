@@ -26,41 +26,75 @@ class GeneralTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Expanded(
-            child: Container(
-              alignment: Alignment.topCenter,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Transform.scale(
+          Container(
+            alignment: Alignment.topCenter,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Transform.scale(
                       scale: 0.8,
                       child: ValueListenableBuilder(
                         valueListenable: settings.alwaysOnTop,
                         builder: (context, aot, child) => Checkbox(
                           splashRadius: 0,
                           checkColor: theme.pmBackgroundColor,
-                          fillColor: MaterialStateColor.resolveWith((states) => theme.pmTextColor),
+                          fillColor: MaterialStateColor.resolveWith((states) =>
+                              states.contains(MaterialState.selected)
+                                  ? theme.pmTextColor
+                                  : theme.pmBackgroundColor),
                           value: aot,
-                          onChanged: (value) async => await settings.aotSwitch(value ?? aot),
+                          onChanged: (value) async =>
+                              await settings.aotSwitch(value ?? aot),
                         ),
-                      )
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3.0),
+                    child: Text(
+                      'Always on top',
+                      style: TextStyle(color: theme.pmTextColor),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3.0),
-                      child: Text(
-                        'Always on top',
-                        style: TextStyle(
-                          color: theme.pmTextColor
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          )
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Transform.scale(
+                      scale: 0.8,
+                      child: ValueListenableBuilder(
+                        valueListenable: settings.showSearchBar,
+                        builder: (context, show, child) => Checkbox(
+                          splashRadius: 0,
+                          checkColor: theme.pmBackgroundColor,
+                          fillColor: MaterialStateColor.resolveWith((states) =>
+                              states.contains(MaterialState.selected)
+                                  ? theme.pmTextColor
+                                  : theme.pmBackgroundColor),
+                          activeColor: Colors.blue,
+                          value: show,
+                          onChanged: (value) async =>
+                              await settings.showSearchBarSwitch(value ?? show),
+                        ),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3.0),
+                    child: Text(
+                      'Show search bar',
+                      style: TextStyle(color: theme.pmTextColor),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

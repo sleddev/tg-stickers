@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tgstickers/providers/keyboard_provider.dart';
-import 'package:window_manager/window_manager.dart';
 
 import 'pages/home/home.dart';
 import 'pages/settings/settings.dart';

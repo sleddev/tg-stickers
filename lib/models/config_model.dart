@@ -3,13 +3,17 @@ import 'dart:io';
 class ConfigData {
   String token;
   bool alwaysOnTop;
+  int copySize;
+  bool showSearchBar;
   List<StickerPackConfig> stickerPacks;
 
-  ConfigData(this.token, this.alwaysOnTop, this.stickerPacks);
+  ConfigData(this.token, this.alwaysOnTop, this.copySize, this.showSearchBar, this.stickerPacks,);
 
   ConfigData.fromJson(Map<String, dynamic> json, Directory wd)
     : token = json['token'] ?? '',
       alwaysOnTop = json['always_on_top'] is bool ? json['always_on_top'] ?? true : true,
+      copySize = json['copy_size'] is int ? json['copy_size'] ?? 512 : 512,
+      showSearchBar = json['show_search_bar'] is bool ? json['show_search_bar'] ?? true : true,
       stickerPacks = List<StickerPackConfig>.generate(
         ((json['sticker_packs'] ?? []) as List<dynamic>).length,
         (index) => StickerPackConfig.fromJson(((json['sticker_packs'] ?? []) as List<dynamic>)[index], wd));
@@ -17,7 +21,9 @@ class ConfigData {
   Map<String, dynamic> toJson() => {
     'token': token,
     'always_on_top': alwaysOnTop,
-    'sticker_packs': List.generate(stickerPacks.length, (index) => stickerPacks[index].toJson())
+    'copy_size': copySize,
+    'show_search_bar': showSearchBar,
+    'sticker_packs': List.generate(stickerPacks.length, (index) => stickerPacks[index].toJson()),
   };
 }
 

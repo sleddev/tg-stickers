@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import '../models/config_model.dart';
 
 class ConfigProvider extends ChangeNotifier {
-
   Future<String> getPath() async {
     return '${(await getApplicationDocumentsDirectory()).path}/TGStickers/';
   }
@@ -19,7 +18,6 @@ class ConfigProvider extends ChangeNotifier {
     String configString;
     try {
       configString = await configFile.readAsString();
-
     } on FileSystemException {
       configString = """
 {
@@ -30,18 +28,21 @@ class ConfigProvider extends ChangeNotifier {
 """;
     }
 
-    Map<String, dynamic> configJson = jsonDecode(configString.isEmpty ? '{}' : configString);
+    Map<String, dynamic> configJson =
+        jsonDecode(configString.isEmpty ? '{}' : configString);
     ConfigData config = ConfigData.fromJson(configJson, Directory(path));
 
     return config;
   }
 
   /// Updates the `config.json` file.
-  /// 
+  ///
   /// If an `update` function in provided, the other arguments aren't used
-  Future<void> updateConfig ({
-    Future<ConfigData> Function(ConfigData value)? updater, 
+  Future<void> updateConfig({
+    Future<ConfigData> Function(ConfigData value)? updater,
     String? token,
+    int? copySize,
+    bool? showSearchBar,
     List<StickerPackConfig>? stickerPacks,
   }) async {
     File configFile = File('${await getPath()}/config.json');
@@ -52,6 +53,8 @@ class ConfigProvider extends ChangeNotifier {
       updated = config;
 
       if (token != null) updated.token = token;
+      if (copySize != null) updated.copySize = copySize;
+      if (showSearchBar != null) updated.showSearchBar = showSearchBar;
       if (stickerPacks != null) updated.stickerPacks = stickerPacks;
     } else {
       updated = await updater(config);
