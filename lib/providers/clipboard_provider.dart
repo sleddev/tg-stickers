@@ -21,6 +21,7 @@ class ClipboardProvider {
           settingsProvider.copySize.value.toString()));
       await baseDir.create(recursive: true);
       var targetFile = File(p.join(baseDir.path, p.basename(imageFile.path)));
+      imageFile = targetFile;
 
       if (!targetFile.existsSync()) {
         var originalImage = img.decodePng(imageBytes)!;
@@ -35,7 +36,8 @@ class ClipboardProvider {
         var resizedBytes = img.encodePng(resized);
         img.writeFile(targetFile.path, resizedBytes);
         imageBytes = resizedBytes;
-        imageFile = targetFile;
+      } else {
+        imageBytes = await targetFile.readAsBytes();
       }
     }
 
