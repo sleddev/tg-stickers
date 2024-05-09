@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -46,6 +48,7 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   Future<void> setCopySize(int size) async {
+    size = max(1, min(512, size));
     copySize.value = size;
 
     await configProvider.updateConfig(updater: (value) async {
@@ -53,7 +56,6 @@ class SettingsProvider extends ChangeNotifier {
       return value;
     });
   }
-
 
   void setTabWidget(Widget widget, String name) {
     tabWidget = widget;

@@ -25,50 +25,54 @@ import 'providers/download_provider.dart';
 class App extends StatelessWidget {
   final StickerProvider stickers;
   final ConfigProvider configProvider;
-  
 
   const App({required this.configProvider, required this.stickers, super.key});
 
   @override
   Widget build(BuildContext context) {
     final ToastProvider toastProvider = ToastProvider();
-    final ClipboardProvider clipboardProvider = ClipboardProvider(toastProvider);
+    final SettingsProvider settingsProvider = SettingsProvider(configProvider);
+    final ClipboardProvider clipboardProvider =
+        ClipboardProvider(toastProvider, settingsProvider);
 
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ConfigProvider>(create: (_) => configProvider),
-        ChangeNotifierProvider<StickerProvider>(create: (_) => stickers),
-        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<ToastProvider>(create: (_) => toastProvider),
-        ChangeNotifierProvider<AddProvider>(create: (_) => AddProvider()),
-        ChangeNotifierProvider<DownloadProvider>(create: (_) => DownloadProvider(config: configProvider, stickers: stickers)),
-        ChangeNotifierProvider<WindowProvider>(create: (_) => WindowProvider(stickers: stickers)),
-        ChangeNotifierProvider(create: (_) => SettingsProvider(configProvider)),
-        Provider<ClipboardProvider>(create: (_) => clipboardProvider),
-        Provider<KeyboardProvider>(create: (_) => KeyboardProvider(stickers: stickers, clipboard: clipboardProvider)),
-      ],
-      builder: (context, child) {
-        final window = Provider.of<WindowProvider>(context);
-        final theme = Provider.of<ThemeProvider>(context);
+        providers: [
+          ChangeNotifierProvider<ConfigProvider>(create: (_) => configProvider),
+          ChangeNotifierProvider<StickerProvider>(create: (_) => stickers),
+          ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider<ToastProvider>(create: (_) => toastProvider),
+          ChangeNotifierProvider<AddProvider>(create: (_) => AddProvider()),
+          ChangeNotifierProvider<DownloadProvider>(
+              create: (_) =>
+                  DownloadProvider(config: configProvider, stickers: stickers)),
+          ChangeNotifierProvider<WindowProvider>(
+              create: (_) => WindowProvider(stickers: stickers)),
+          ChangeNotifierProvider(create: (_) => settingsProvider),
+          Provider<ClipboardProvider>(create: (_) => clipboardProvider),
+          Provider<KeyboardProvider>(
+              create: (_) => KeyboardProvider(
+                  stickers: stickers, clipboard: clipboardProvider)),
+        ],
+        builder: (context, child) {
+          final window = Provider.of<WindowProvider>(context);
+          final theme = Provider.of<ThemeProvider>(context);
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'TG Stickers',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            textSelectionTheme: TextSelectionThemeData(
-              selectionColor: theme.selectionColor
-            )
-          ),
-          home: Scaffold(
-            backgroundColor: const Color(0xFF333333),
-            body: ValueListenableBuilder(
-              valueListenable: window.settingsOpen,
-              builder: (context, value, child) => value ? const SettingsPage() : const HomePage(),
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'TG Stickers',
+            theme: ThemeData(
+                primarySwatch: Colors.blue,
+                textSelectionTheme: TextSelectionThemeData(
+                    selectionColor: theme.selectionColor)),
+            home: Scaffold(
+              backgroundColor: const Color(0xFF333333),
+              body: ValueListenableBuilder(
+                valueListenable: window.settingsOpen,
+                builder: (context, value, child) =>
+                    value ? const SettingsPage() : const HomePage(),
+              ),
             ),
-          ),
-        );
-      }
-    );
+          );
+        });
   }
 }

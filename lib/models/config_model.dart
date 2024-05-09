@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 class ConfigData {
   String token;
@@ -12,7 +13,7 @@ class ConfigData {
   ConfigData.fromJson(Map<String, dynamic> json, Directory wd)
     : token = json['token'] ?? '',
       alwaysOnTop = json['always_on_top'] is bool ? json['always_on_top'] ?? true : true,
-      copySize = json['copy_size'] is int ? json['copy_size'] ?? 512 : 512,
+      copySize = max(1, min(512, json['copy_size'] is int ? json['copy_size'] ?? 512 : 512)),
       showSearchBar = json['show_search_bar'] is bool ? json['show_search_bar'] ?? true : true,
       stickerPacks = List<StickerPackConfig>.generate(
         ((json['sticker_packs'] ?? []) as List<dynamic>).length,
