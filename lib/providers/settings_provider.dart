@@ -16,15 +16,19 @@ class SettingsProvider extends ChangeNotifier {
 
   ValueNotifier<bool> alwaysOnTop = ValueNotifier(false);
   ValueNotifier<bool> showSearchBar = ValueNotifier(true);
+  ValueNotifier<bool> globalSearch = ValueNotifier(false);
   ValueNotifier<int> copySize = ValueNotifier(512);
   SettingsProvider(this.configProvider) {
     init();
   }
 
   Future<void> init() async {
-    alwaysOnTop.value = (await configProvider.getConfig()).alwaysOnTop;
-    showSearchBar.value = (await configProvider.getConfig()).showSearchBar;
-    copySize.value = (await configProvider.getConfig()).copySize;
+    final config = await configProvider.getConfig();
+
+    alwaysOnTop.value = config.alwaysOnTop;
+    showSearchBar.value = config.showSearchBar;
+    globalSearch.value = config.globalSearch;
+    copySize.value = config.copySize;
   }
 
   Future<void> aotSwitch(bool aot) async {
@@ -53,6 +57,15 @@ class SettingsProvider extends ChangeNotifier {
 
     await configProvider.updateConfig(updater: (value) async {
       value.copySize = size;
+      return value;
+    });
+  }
+
+  Future<void> setGlobalSearch(bool global) async {
+    globalSearch.value = global;
+
+    await configProvider.updateConfig(updater: (value) async {
+      value.globalSearch = global;
       return value;
     });
   }

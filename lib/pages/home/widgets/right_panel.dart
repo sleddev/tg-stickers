@@ -109,12 +109,19 @@ class _RightPanelState extends State<RightPanel> {
                           child: FittedBox(
                             alignment: Alignment.topLeft,
                             fit: BoxFit.fitHeight,
-                            child: Text(
-                              stickers.selectedPack!.name.toUpperCase(),
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  color: theme.headerColor,
-                                  fontWeight: FontWeight.w500),
+                            child: ValueListenableBuilder(
+                              valueListenable: settings.globalSearch,
+                              builder: (context, globalSearch, child) {
+                                return Text(
+                                  (stickers.filteredWidgets ?? []).isNotEmpty && globalSearch
+                                      ? (searchController.text.isNotEmpty ? "GLOBAL SEARCH RESULTS" : "ALL STICKERS")
+                                      : stickers.selectedPack!.name.toUpperCase(),
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: theme.headerColor,
+                                      fontWeight: FontWeight.w500),
+                                );
+                              }
                             ),
                           ),
                         ),
@@ -217,33 +224,73 @@ class _RightPanelState extends State<RightPanel> {
                                           textFieldFocus.requestFocus();
                                         }
                                       },
-                                      child: TextField(
-                                        focusNode: textFieldFocus,
-                                        autofocus: true,
-                                        controller: searchController,
-                                        onChanged: (value) {
-                                          query = value;
-                                          stickers.filterCurrentPack(value);
-                                          if (mounted) {
-                                            setState(() => noResult =
-                                                (stickers.filteredWidgets ?? [])
-                                                    .isEmpty);
-                                          }
-                                        },
-                                        maxLines: 1,
-                                        cursorColor: theme.inputTextColor,
-                                        decoration: InputDecoration(
-                                            isDense: true,
-                                            border: InputBorder.none,
-                                            hintText:
-                                                'Search in current pack...',
-                                            hintStyle: TextStyle(
-                                                color: theme.inputHintColor)),
-                                        style: TextStyle(
-                                          color: theme.sbTextColor,
-                                          fontSize: 16,
-                                        ),
+                                      child: ValueListenableBuilder(
+                                        valueListenable: settings.globalSearch,
+                                        builder: (context, globalSearch, child) {
+                                          return TextField(
+                                            focusNode: textFieldFocus,
+                                            autofocus: true,
+                                            controller: searchController,
+                                            onChanged: (value) async {
+                                              query = value;
+                                              if (globalSearch) {
+                                                await stickers.filterAllPacks(value);
+                                              } else {
+                                                await stickers.filterCurrentPack(value);
+                                              }
+                                              if (mounted) {
+                                                setState(() => noResult =
+                                                    (stickers.filteredWidgets ?? [])
+                                                        .isEmpty);
+                                              }
+                                            },
+                                            maxLines: 1,
+                                            cursorColor: theme.inputTextColor,
+                                            decoration: InputDecoration(
+                                                isDense: true,
+                                                border: InputBorder.none,
+                                                hintText: globalSearch ?
+                                                    'Search in all packs...' :
+                                                    'Search in current pack...',
+                                                hintStyle: TextStyle(
+                                                    color: theme.inputHintColor)),
+                                            style: TextStyle(
+                                              color: theme.sbTextColor,
+                                              fontSize: 16,
+                                            ),
+                                          );
+                                        }
                                       ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: ValueListenableBuilder(
+                                      valueListenable: settings.globalSearch,
+                                      builder: (context, globalSearch, child) {
+                                        return GestureDetector(
+                                            onTap: () async {
+                                              settings.setGlobalSearch(!globalSearch);
+                                              if (globalSearch) {
+                                                await stickers.filterCurrentPack(searchController.text);
+                                              } else {
+                                                await stickers.filterAllPacks(searchController.text);
+                                              }
+                                              if (mounted) {
+                                                setState(() => noResult =
+                                                    (stickers.filteredWidgets ?? [])
+                                                        .isEmpty);
+                                              }
+                                              searchFocus.requestFocus();
+                                            },
+                                            child: Icon(
+                                                globalSearch
+                                                    ? FluentSystemIcons.ic_fluent_grid_regular
+                                                    : FluentSystemIcons.ic_fluent_globe_regular,
+                                                size: 18,
+                                                color: theme.sbTextColor));
+                                      }
                                     ),
                                   ),
                                   const SizedBox(width: 4),

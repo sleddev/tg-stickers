@@ -79,24 +79,30 @@ class StickerProvider extends ChangeNotifier {
     if (stickerPacks.isNotEmpty) changePack(index: stickerPacks.length - 1);
   }
 
-  Future<void> loadCurrentPack() async {
-    if (selectedPack == null) return;
+  Future<List<MapEntry<String, SmallSticker>>> loadPackWidgets({
+    String? id,
+    int? index,
+    StickerPackConfig? pack
+  }) async {
+    if (id != null) pack = stickerPacks.firstWhere((element) => element.id == id);
+    if (index != null) pack = stickerPacks[index];
 
     var path = await configProvider.getPath();
-    var imgPath = Directory(selectedPack!.basePath).isAbsolute ? Directory(selectedPack!.basePath) : Directory('$path${selectedPack!.basePath}');
+    var imgPath = Directory(pack!.basePath).isAbsolute ? Directory(pack.basePath) : Directory('$path${pack.basePath}');
+
+    List<MapEntry<String, SmallSticker>> entryList = [];
     if (!await imgPath.exists()) {
-      selectedPackWidgets = [];
-      return;
+      return entryList;
     }
+
     var fileList = imgPath.listSync();
     fileList.removeWhere((element) => element.path.contains('cover.png'));
 
-    var supportedTypes = ['.jpg', '.jpeg', '.jfif', '.png', '.webp', '.gif', '.bmp'];
+    final supportedTypes = ['.jpg', '.jpeg', '.jfif', '.png', '.webp', '.gif', '.bmp'];
 
-    var entryList = <MapEntry<String, SmallSticker>>[];
     for (var element in fileList) {
       if ((await element.stat()).type != FileSystemEntityType.file) continue;
-      if (!supportedTypes.contains(extension(element.path).toLowerCase())) continue; //{
+      if (!supportedTypes.contains(extension(element.path).toLowerCase())) continue;
 
       String keywords = basename(element.path).split('-').last.replaceAll('_', ' ');
       String emoji = '';
@@ -108,7 +114,13 @@ class StickerProvider extends ChangeNotifier {
       entryList.add(MapEntry(emoji + keywords, SmallSticker(imageFile: File(element.path), emoji: emoji)));
     }
 
-    selectedPackWidgets = entryList;
+    return entryList;
+  }
+
+  Future<void> loadCurrentPack() async {
+    if (selectedPack == null) return;
+
+    selectedPackWidgets = await loadPackWidgets(pack: selectedPack);
     notifyListeners();
   }
 
@@ -118,6 +130,23 @@ class StickerProvider extends ChangeNotifier {
       if (element.key.toLowerCase().contains(query.toLowerCase())) return true;
       return false;
     }).toList();
+    notifyListeners();
+  }
+
+  Future<void> filterAllPacks(String query) async {
+    if (query.isEmpty) filteredWidgets = selectedPackWidgets;
+    List<MapEntry<String, SmallSticker>> results = [];
+    for (var pack in stickerPacks) {
+      var packEntries = await loadPackWidgets(pack: pack);
+      results.addAll(
+          packEntries.where((element) =>
+              element.key
+                  .toLowerCase()
+                  .contains(query.toLowerCase())
+          )
+      );
+    }
+    filteredWidgets = results;
     notifyListeners();
   }
 

@@ -43,6 +43,7 @@ class ConfigProvider extends ChangeNotifier {
     String? token,
     int? copySize,
     bool? showSearchBar,
+    bool? globalSearch,
     List<StickerPackConfig>? stickerPacks,
   }) async {
     File configFile = File('${await getPath()}/config.json');
@@ -55,6 +56,7 @@ class ConfigProvider extends ChangeNotifier {
       if (token != null) updated.token = token;
       if (copySize != null) updated.copySize = copySize;
       if (showSearchBar != null) updated.showSearchBar = showSearchBar;
+      if (globalSearch != null) updated.globalSearch = globalSearch;
       if (stickerPacks != null) updated.stickerPacks = stickerPacks;
     } else {
       updated = await updater(config);
